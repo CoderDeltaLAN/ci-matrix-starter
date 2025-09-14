@@ -1,9 +1,9 @@
+_intel/
+_ci_logs/
+coverage/
+dist/
 node_modules/
 .venv/
-dist/
-coverage/
-_ci_logs/
-_intel/
 .mypy_cache/
 .pytest_cache/
 sbom-*.json
