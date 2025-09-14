@@ -19,7 +19,26 @@ jobs:
           node-version: 20
           registry-url: https://npm.pkg.github.com/
           scope: "@CoderDeltaLAN"
+          always-auth: true
+      - name: Configure .npmrc for GPR
+        run: |
+          cat > .npmrc <<'NPMRC'
+          @CoderDeltaLAN:registry=https://npm.pkg.github.com
+          //npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}
+          always-auth=true
+          NPMRC
       - run: npm ci --ignore-scripts --fund=false
-      - run: npm publish --registry=https://npm.pkg.github.com/
+      - name: Bump version if already published
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          NAME=$(node -p "require('./package.json').name")
+          VER=$(node -p "require('./package.json').version")
+          if npm view "$NAME@$VER" version --registry=https://npm.pkg.github.com >/dev/null 2>&1; then
+            echo "Version $VER exists in GPR. Bumping patch…"
+            npm version patch --no-git-tag-version
+          fi
+      - name: Publish to GPR
+        run: npm publish --registry=https://npm.pkg.github.com/ --ignore-scripts
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
