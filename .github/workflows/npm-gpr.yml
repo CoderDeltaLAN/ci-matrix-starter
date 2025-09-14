@@ -15,7 +15,7 @@ jobs:
         with:
           node-version: 20
           registry-url: https://npm.pkg.github.com/
-          scope: '@CoderDeltaLAN'
+          scope: "@CoderDeltaLAN"
       - run: npm ci --ignore-scripts --fund=false
       - run: npm publish --registry=https://npm.pkg.github.com/
         env:
