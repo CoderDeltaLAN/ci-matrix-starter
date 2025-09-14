@@ -31,9 +31,10 @@ jobs:
         run: |
           if [ -f tsconfig.json ]; then npx tsc --noEmit; else echo "no tsconfig.json"; fi
       - name: Tests + coverage
+      - name: Tests
         run: |
           if npm run -s test --dry-run >/dev/null 2>&1; then
-            npm test -- --coverage --coverageReporters=text --coverageReporters=json-summary;
+            npm test --silent;
           else
             echo "no tests";
           fi
