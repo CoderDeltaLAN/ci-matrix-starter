@@ -4,41 +4,9 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
-
 concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
-
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    steps:
-      - uses: actions/checkout@v4
-
-      # --- TypeScript ---
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-      - run: npm ci --ignore-scripts --fund=false
-      - run: npx eslint . --max-warnings=0 || true
-      - run: npx prettier --check "README.md" ".github/**/*.yml" "eslint.config.mjs"
-
-      # --- Python 3.11 ---
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-      - run: pipx install poetry
-      - run: poetry install --only main,test --no-interaction
-      - run: poetry run ruff check .
-      - run: poetry run black --check src tests
-      - run: PYTHONPATH=src poetry run pytest -q
-
-      # --- Python 3.12 ---
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-      - run: poetry install --only main,test --no-interaction
-      - run: poetry run ruff check .
-      - run: poetry run black --check src tests
-      - run: PYTHONPATH=src poetry run pytest -q
+  py: { uses: ./.github/workflows/py-ci.yml }
+  ts: { uses: ./.github/workflows/ts-ci.yml }

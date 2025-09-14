@@ -1,9 +1,8 @@
 node_modules/
-.venv/
 dist/
+build/
 coverage/
-_ci_logs/
-_intel/
-.mypy_cache/
-.pytest_cache/
-sbom-*.json
+*.min.js
+*.map
+package-lock.json
+poetry.lock
