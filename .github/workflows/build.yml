@@ -1,19 +1,23 @@
-name: CI / build
+name: CI
 on:
   push:
-    branches: [main]
+    branches: ['**']
   pull_request:
-    branches: [main]
+    branches: ['main']
 concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
 jobs:
-  node:
+  ts:
     uses: ./.github/workflows/ts-ci.yml
-    with:
-      node-version: "20"
-  python:
+  py:
     uses: ./.github/workflows/py-ci.yml
     with:
       python-versions: '["3.11","3.12"]'
       cov-min: 100
+  build:
+    name: build
+    runs-on: ubuntu-latest
+    needs: [ts, py]
+    steps:
+      - run: echo "aggregate"
