@@ -4,10 +4,13 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "lint": "eslint . --max-warnings=0",
+    "lint": "eslint . --ext .ts,.js --max-warnings=0",
     "format:check": "prettier --check .",
     "format:write": "prettier --write .",
-    "test": "node -e \"process.exit(0)\""
+    "test": "node -e \"process.exit(0)\"",
+    "format": "prettier --write .",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "smoke": "node -e \"console.log('smoke ok')\""
   },
   "devDependencies": {
     "@eslint/js": "^9.0.0",
