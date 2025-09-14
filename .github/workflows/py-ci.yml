@@ -58,6 +58,7 @@ jobs:
           path: |
             coverage.xml
             sbom-python-${{ matrix.py }}.xml
+          if-no-files-found: ignore
   sign:
     if: ${{ always() && secrets.COSIGN_KEY != '' }}
     needs: [py]

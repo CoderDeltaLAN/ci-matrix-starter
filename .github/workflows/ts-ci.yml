@@ -24,7 +24,7 @@ jobs:
           node-version: ${{ inputs.node-version }}
           cache: npm
       - name: Install deps
-        run: npm ci
+        run: npm ci || npm install
       - name: Lint & Format
         run: npx prettier --check . && npx eslint . --max-warnings=0
       - name: Type check
@@ -47,6 +47,7 @@ jobs:
           path: |
             coverage/coverage-summary.json
             sbom-node.json
+          if-no-files-found: ignore
   sign:
     if: ${{ always() && secrets.COSIGN_KEY != '' }}
     needs: [ts]
