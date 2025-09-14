@@ -1,6 +1,7 @@
 name: ts-ci (reusable)
 on:
   workflow_call:
+  workflow_call:
 jobs:
   ts:
     runs-on: ubuntu-latest
