@@ -1,0 +1,8 @@
+node_modules/
+.venv/
+dist/
+coverage/
+_ci_logs/
+.mypy_cache/
+.pytest_cache/
+sbom-*.json

@@ -1,0 +1,41 @@
+[tool.poetry]
+name = "ci-matrix-starter"
+version = "0.1.0"
+description = "Reusable CI workflows for Py/TS with SBOM & signatures."
+authors = ["CoderDeltaLAN <coderdeltalan.cargo784@8alias.com>"]
+readme = "README.md"
+packages = [{ include = "ci_matrix_starter", from = "src" }]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.3.0"
+pytest-cov = "^5.0.0"
+ruff = "^0.6.0"
+black = "^24.10.0"
+mypy = "^1.11.0"
+types-setuptools = "*"
+
+[tool.black]
+line-length = 88
+extend-exclude = '''
+(
+  ^node_modules/
+| ^\.venv/
+| ^dist/
+)
+'''
+
+[tool.ruff]
+line-length = 88
+extend-exclude = ["node_modules", ".venv", "dist"]
+
+[tool.mypy]
+python_version = "3.11"
+strict = false
+packages = ["ci_matrix_starter"]
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

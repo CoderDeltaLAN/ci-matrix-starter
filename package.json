@@ -1,0 +1,21 @@
+{
+  "name": "ci-matrix-starter",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "lint": "eslint . --max-warnings=0",
+    "format:check": "prettier --check .",
+    "format:write": "prettier --write .",
+    "test": "node -e \"process.exit(0)\""
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.0.0",
+    "@types/node": "^22.0.0",
+    "@cyclonedx/cyclonedx-npm": "^1.18.0",
+    "eslint": "^9.0.0",
+    "prettier": "^3.0.0",
+    "typescript": "^5.6.0",
+    "typescript-eslint": "^8.0.0"
+  }
+}
