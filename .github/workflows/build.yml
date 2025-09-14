@@ -1,27 +1,19 @@
 name: CI / build
 on:
   push:
-    branches: ["main"]
+    branches: [main]
   pull_request:
-    types: [opened, reopened, synchronize]
-    branches: ["main"]
-  workflow_dispatch:
-
+    branches: [main]
 concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref_name }}
+  group: ci-${{ github.ref }}
   cancel-in-progress: true
-
 jobs:
+  node:
+    uses: ./.github/workflows/ts-ci.yml
+    with:
+      node-version: "20"
   python:
-    name: build (py)
-    if: ${{ !github.event.pull_request.draft }}
     uses: ./.github/workflows/py-ci.yml
     with:
       python-versions: '["3.11","3.12"]'
       cov-min: 100
-  node:
-    name: build (node)
-    if: ${{ !github.event.pull_request.draft }}
-    uses: ./.github/workflows/ts-ci.yml
-    with:
-      node-version: "20"
