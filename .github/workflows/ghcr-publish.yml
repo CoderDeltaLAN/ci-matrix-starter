@@ -1,4 +1,7 @@
-name: Publish container to GHCR
+on:
+  workflow_dispatch:
+  release:
+    types: [published]
 on:
   workflow_dispatch:
   release:
