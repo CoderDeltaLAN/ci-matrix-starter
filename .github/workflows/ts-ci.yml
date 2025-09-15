@@ -8,8 +8,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-        with:
-          node-version: 20
+        with: { node-version: 20 }
       - run: npm ci --ignore-scripts --fund=false
       - run: npx eslint . --max-warnings=0 || true
       - run: npx prettier --check "README.md" ".github/**/*.yml" "eslint.config.mjs"

@@ -3,14 +3,8 @@ on:
   workflow_call:
     inputs:
       python-versions:
-        required: false
-        type: string
-        default: '["3.11","3.12"]'
-      cov-min:
-        required: false
-        type: number
-        default: 100
-
+        { required: false, type: string, default: '["3.11","3.12"]' }
+      cov-min: { required: false, type: number, default: 100 }
 jobs:
   py:
     name: Python ${{ matrix.py }}
@@ -18,7 +12,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        py: ${{ fromJson(inputs.python-versions) }}
+        py: ${{ fromJSON(inputs.python-versions) }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
