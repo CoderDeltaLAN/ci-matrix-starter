@@ -1,6 +1,6 @@
 # ⭐ ci-matrix-starter — Reusable CI Workflows (Python & TypeScript)
 
-A lean, production-ready **GitHub Actions starter** that ships **reusable CI workflows** for **Python (3.11/3.12)** and **TypeScript/Node 20**.  
+A lean, production-ready **GitHub Actions starter** that ships **reusable CI workflows** for **Python (3.11/3.12)** and **TypeScript/Node 20**.
 It’s designed for **always-green CI** with strict local gates mirroring CI, **CodeQL** out of the box, optional **SBOM** generation, and guard-rails for safe merges (branch protection + required checks).
 
 <div align="center">
@@ -209,7 +209,7 @@ TypeScript job snippet recap:
 
 ## 💚 Donations & Sponsorship
 
-If this project saves you time, consider supporting ongoing maintenance. Thank you!  
+If this project saves you time, consider supporting ongoing maintenance. Thank you!
 [![Donate](https://img.shields.io/badge/Donate-PayPal-0070ba?logo=paypal&logoColor=white)](https://www.paypal.com/donate/?hosted_button_id=YVENCBNCZWVPW)
 
 ---
@@ -222,7 +222,7 @@ reusable github actions workflows, python typescript ci starter, node 20 eslint 
 
 ## 👤 Author
 
-**CoderDeltaLAN (Yosvel)**  
+**CoderDeltaLAN (Yosvel)**
 GitHub: https://github.com/CoderDeltaLAN
 
 ---

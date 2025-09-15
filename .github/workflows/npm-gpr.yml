@@ -16,7 +16,27 @@ jobs:
           node-version: 20
           registry-url: https://npm.pkg.github.com/
           scope: "@CoderDeltaLAN"
-      - run: npm ci --ignore-scripts --fund=false
-      - run: npm publish --registry=https://npm.pkg.github.com/
+          always-auth: true
+      - name: Prepare package.json for GPR
+        run: |
+          node -e "const fs=require('fs');let p=JSON.parse(fs.readFileSync('package.json','utf8'));
+          if(p.private) delete p.private;
+          if(!p.name||!p.name.startsWith('@CoderDeltaLAN/')) p.name='@CoderDeltaLAN/ci-matrix-starter';
+          p.publishConfig={registry:'https://npm.pkg.github.com'};
+          if(!p.version) p.version='0.1.0';
+          fs.writeFileSync('package.json',JSON.stringify(p,null,2));"
+          cat package.json
+      - name: Publish to GitHub Packages (auto-bump if exists)
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          publish() { npm publish --registry=https://npm.pkg.github.com/; }
+          if ! publish; then
+            echo "Retrying with patch bump…"
+            node -e "const fs=require('fs');let p=JSON.parse(fs.readFileSync('package.json','utf8'));
+            let [a,b,c]=(p.version||'0.1.0').split('.').map(n=>parseInt(n||0,10)); p.version=[a,b,(isFinite(c)?c:0)+1].join('.');
+            fs.writeFileSync('package.json',JSON.stringify(p,null,2));"
+            cat package.json
+            publish
+          fi
