@@ -3,9 +3,10 @@ on:
   workflow_call:
     inputs:
       python-versions:
-        required: false
         type: string
+        required: false
         default: '["3.11","3.12"]'
+
 jobs:
   py:
     name: Python ${{ matrix.py }}
@@ -16,29 +17,38 @@ jobs:
         py: ${{ fromJson(inputs.python-versions) }}
     steps:
       - uses: actions/checkout@v4
+
+      - name: Detect Python project
+        id: detect
+        run: |
+          if [ -f pyproject.toml ]; then
+            echo "present=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "present=false" >> "$GITHUB_OUTPUT"
+            echo "No pyproject.toml — skipping Python checks."
+          fi
+
       - uses: actions/setup-python@v5
+        if: steps.detect.outputs.present == 'true'
         with:
           python-version: ${{ matrix.py }}
+
       - name: Install Poetry
-        uses: snok/install-poetry@v1
-        with:
-          version: "1.8.3"
-          virtualenvs-create: true
-          virtualenvs-in-project: true
-      - name: Cache Poetry venv
-        uses: actions/cache@v4
-        with:
-          path: .venv
-          key: ${{ runner.os }}-poetry-${{ matrix.py }}-${{ hashFiles('**/poetry.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-poetry-${{ matrix.py }}-
+        if: steps.detect.outputs.present == 'true'
+        run: pipx install poetry
+
       - name: Install deps
-        run: poetry install --no-interaction
+        if: steps.detect.outputs.present == 'true'
+        run: poetry install --only main,test --no-interaction
+
       - name: Ruff
+        if: steps.detect.outputs.present == 'true'
         run: poetry run ruff check .
+
       - name: Black
+        if: steps.detect.outputs.present == 'true'
         run: poetry run black --check src tests
-      - name: Pytest
-        env:
-          PYTHONPATH: src
-        run: poetry run pytest -q
+
+      - name: Tests
+        if: steps.detect.outputs.present == 'true'
+        run: PYTHONPATH=src poetry run pytest -q
