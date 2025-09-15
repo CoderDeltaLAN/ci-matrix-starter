@@ -3,8 +3,10 @@ on:
   workflow_call:
     inputs:
       python-versions:
-        { required: false, type: string, default: '["3.11","3.12"]' }
-      cov-min: { required: false, type: number, default: 100 }
+        type: string
+        required: false
+        default: '["3.11","3.12"]'
+
 jobs:
   py:
     name: Python ${{ matrix.py }}
@@ -12,14 +14,41 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        py: ${{ fromJSON(inputs.python-versions) }}
+        py: ${{ fromJson(inputs.python-versions) }}
     steps:
       - uses: actions/checkout@v4
+
+      - name: Detect Python project
+        id: detect
+        run: |
+          if [ -f pyproject.toml ]; then
+            echo "present=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "present=false" >> "$GITHUB_OUTPUT"
+            echo "No pyproject.toml — skipping Python checks."
+          fi
+
       - uses: actions/setup-python@v5
+        if: steps.detect.outputs.present == 'true'
         with:
           python-version: ${{ matrix.py }}
-      - run: pipx install poetry
-      - run: poetry install --only main,test --no-interaction
-      - run: poetry run ruff check .
-      - run: poetry run black --check src tests
-      - run: PYTHONPATH=src poetry run pytest -q
+
+      - name: Install Poetry
+        if: steps.detect.outputs.present == 'true'
+        run: pipx install poetry
+
+      - name: Install deps
+        if: steps.detect.outputs.present == 'true'
+        run: poetry install --only main,test --no-interaction
+
+      - name: Ruff
+        if: steps.detect.outputs.present == 'true'
+        run: poetry run ruff check .
+
+      - name: Black
+        if: steps.detect.outputs.present == 'true'
+        run: poetry run black --check src tests
+
+      - name: Tests
+        if: steps.detect.outputs.present == 'true'
+        run: PYTHONPATH=src poetry run pytest -q
