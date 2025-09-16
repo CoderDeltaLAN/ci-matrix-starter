@@ -18,7 +18,7 @@ jobs:
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: 9
+          # version: 9  # commented to defer to package.json packageManager
           run_install: false
 
       - name: Setup Node
