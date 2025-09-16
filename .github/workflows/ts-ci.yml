@@ -27,6 +27,6 @@ jobs:
       - name: ESLint
         run: npx eslint . || npx eslint . --ext .ts,.js || true
       - name: Prettier (check)
-        run: npx prettier -c .
+        run: npx prettier -c . --ignore-path .prettierignore
       - name: Tests
         run: pnpm test -r || npm test
