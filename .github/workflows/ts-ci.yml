@@ -1,26 +1,32 @@
-name: ts-ci (reusable)
+name: ts-ci
 on:
   workflow_call:
+    inputs:
+      node-version:
+        required: false
+        type: string
+        default: "20"
+  workflow_dispatch:
 
 jobs:
   ts:
-    name: ts
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-          cache: pnpm
-
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: 9.6.0
+          version: 9
           run_install: false
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ inputs.node-version }}
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
 
       - name: Install deps
         run: |
@@ -31,10 +37,18 @@ jobs:
           fi
 
       - name: ESLint
-        run: npx eslint . --ext .ts,.js || true
+        if: ${{ hashFiles('**/eslint.config.*', '**/.eslintrc*') != '' && hashFiles('**/*.{js,jsx,ts,tsx,mjs,cjs}') != '' }}
+        run: npx -y eslint . --ext .ts,.tsx,.js,.jsx,.mjs,.cjs || true
 
       - name: Prettier (check)
-        run: npx prettier -c . --ignore-path .prettierignore
+        if: ${{ hashFiles('**/*.{js,jsx,ts,tsx,mjs,cjs}') != '' }}
+        run: |
+          FILES="$(git ls-files '*.ts' '*.tsx' '*.js' '*.jsx' '*.mjs' '*.cjs' 2>/dev/null || true)"
+          if [ -n "$FILES" ]; then
+            npx -y prettier -c $FILES --ignore-path .prettierignore
+          else
+            echo "No JS/TS files to check."
+          fi
 
       - name: Tests
         run: pnpm test -r || npm test
