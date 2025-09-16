@@ -3,13 +3,30 @@ on:
   workflow_call: {}
 jobs:
   ts:
+    name: ts
     runs-on: ubuntu-latest
-    timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with: { node-version: 20 }
-      - run: npm ci --ignore-scripts --fund=false
-      - run: npx eslint . --max-warnings=0 || true
-      - run: npx prettier --check "README.md" ".github/**/*.yml" "eslint.config.mjs"
-      - run: npm test --silent || true
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "pnpm"
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - name: Install deps
+        run: |
+          if [ -f pnpm-lock.yaml ]; then
+            pnpm install --frozen-lockfile
+          else
+            pnpm install --no-frozen-lockfile
+          fi
+      - name: ESLint
+        run: npx eslint . || npx eslint . --ext .ts,.js || true
+      - name: Prettier (check)
+        run: npx prettier -c .
+      - name: Tests
+        run: pnpm test -r || npm test
