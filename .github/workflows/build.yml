@@ -3,11 +3,9 @@ on:
   push:
     branches: [main]
   pull_request:
-    branches: [main]
   workflow_dispatch:
-concurrency:
-  group: ci-${{ github.ref }}
-  cancel-in-progress: true
 jobs:
-  py: { uses: ./.github/workflows/py-ci.yml }
-  ts: { uses: ./.github/workflows/ts-ci.yml }
+  py:
+    uses: ./.github/workflows/py-ci.yml
+  ts:
+    uses: ./.github/workflows/ts-ci.yml
