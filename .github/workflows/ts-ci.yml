@@ -1,6 +1,7 @@
 name: ts-ci (reusable)
 on:
-  workflow_call: {}
+  workflow_call:
+
 jobs:
   ts:
     name: ts
@@ -8,15 +9,19 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: "20"
-          cache: "pnpm"
+          cache: pnpm
+
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: 9
+          version: 9.6.0
+          run_install: false
+
       - name: Install deps
         run: |
           if [ -f pnpm-lock.yaml ]; then
@@ -24,9 +29,12 @@ jobs:
           else
             pnpm install --no-frozen-lockfile
           fi
+
       - name: ESLint
-        run: npx eslint . || npx eslint . --ext .ts,.js || true
+        run: npx eslint . --ext .ts,.js || true
+
       - name: Prettier (check)
         run: npx prettier -c . --ignore-path .prettierignore
+
       - name: Tests
         run: pnpm test -r || npm test
