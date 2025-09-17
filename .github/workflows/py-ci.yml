@@ -3,7 +3,7 @@ name: "Python CI (reusable)"
 on:
   workflow_call:
     inputs:
-      python-versions:
+      python_versions:
         type: string
         required: false
         default: '["3.11","3.12"]'
@@ -11,7 +11,7 @@ on:
         type: string
         required: false
         default: '["ubuntu-latest"]'
-      run-tests:
+      run_tests:
         type: boolean
         required: false
         default: true
@@ -30,7 +30,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python: ${{ fromJson(inputs.python-versions) }}
+        python: ${{ fromJson(inputs.python_versions) }}
         os: ${{ fromJson(inputs.os) }}
     steps:
       - uses: actions/checkout@v4
@@ -53,15 +53,14 @@ jobs:
           black . --check
           mypy || true
       - name: Tests
-        if: inputs.run-tests == true
+        if: inputs.run_tests == true
         env:
           PYTHONPATH: src
         shell: bash
         run: |
           pytest -q || rc=$?
-          # 5 = "no tests collected" → se considera éxito en plantilla
           if [[ "${rc:-0}" -eq 5 ]]; then
             echo "No tests collected; treating as success."
-            exit 0
+            rc=0
           fi
           exit "${rc:-0}"

@@ -18,17 +18,16 @@ jobs:
     name: py (reusable)
     uses: ./.github/workflows/py-ci.yml
     with:
-      python-versions: '["3.11","3.12"]'
+      python_versions: '["3.11","3.12"]'
       os: '["ubuntu-latest"]'
-      run-tests: true
+      run_tests: true
 
   ts:
-    # Solo crea el job si hay al menos un package.json en el repo
     if: ${{ hashFiles('**/package.json') != '' }}
     name: ts (reusable)
     uses: ./.github/workflows/ts-ci.yml
     with:
-      node-versions: '["22.x"]'
+      node_versions: '["22.x"]'
       os: '["ubuntu-latest"]'
-      package-manager: "pnpm"
-      test-command: "npm test --if-present"
+      package_manager: "pnpm"
+      test_command: "npm test --if-present"
