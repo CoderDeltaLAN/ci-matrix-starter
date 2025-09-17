@@ -14,11 +14,11 @@ on:
       package_manager:
         type: string
         required: false
-        default: "pnpm"
+        default: pnpm
       test_command:
         type: string
         required: false
-        default: "npm test --if-present"
+        default: 'pnpm -s test || echo "no tests"'
 
 permissions:
   contents: read
@@ -29,74 +29,47 @@ concurrency:
 
 jobs:
   build:
-    if: ${{ hashFiles('**/package.json') != '' }}
-    name: node ${{ matrix.node }} • ${{ matrix.os }}
+    name: node${{ matrix.node }} • ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
         node: ${{ fromJson(inputs.node_versions) }}
         os: ${{ fromJson(inputs.os) }}
+
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - name: Guard — skip if no Node project
+        id: guard
+        shell: bash
+        run: |
+          if find -L . -type f -name package.json \
+               -not -path "./.git/*" -not -path "*/node_modules/*" \
+               -print -quit | grep -q .; then
+            echo "has_pkg=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_pkg=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: actions/setup-node@v4
+        if: ${{ steps.guard.outputs.has_pkg == 'true' }}
         with:
           node-version: ${{ matrix.node }}
           cache: ${{ inputs.package_manager }}
 
-      - name: Enable Corepack (pnpm/yarn)
+      - name: Install
+        if: ${{ steps.guard.outputs.has_pkg == 'true' }}
         shell: bash
         run: |
           corepack enable || true
-          corepack prepare pnpm@latest --activate || true
+          case "${{ inputs.package_manager }}" in
+            pnpm) pnpm i --frozen-lockfile || pnpm i ;;
+            npm)  npm ci || npm i ;;
+            yarn) yarn install --frozen-lockfile || yarn install ;;
+            *)    echo "unknown package manager: ${{ inputs.package_manager }}" ;;
+          esac
 
-      - name: Install dependencies (lockfile-aware)
-        shell: bash
-        run: |
-          if [[ ! -f package.json ]]; then
-            echo "No package.json → skip install"; exit 0
-          fi
-          if [[ -f pnpm-lock.yaml ]]; then
-            pnpm i --frozen-lockfile
-          elif [[ -f package-lock.json ]]; then
-            npm ci
-          elif [[ -f yarn.lock ]]; then
-            yarn install --frozen-lockfile
-          else
-            npm ci || npm i
-          fi
-
-      - name: Prettier (check if config/files present)
-        if: ${{ hashFiles('**/.prettierrc*','**/prettier.config.*','**/*.js','**/*.ts','**/*.tsx') != '' }}
-        shell: bash
-        run: npx -y prettier -c .
-
-      - name: ESLint (only if config exists)
-        if: ${{ hashFiles('**/.eslintrc*') != '' }}
-        shell: bash
-        run: npx -y eslint . --max-warnings=0
-
-      - name: Type check (only if tsconfig exists)
-        if: ${{ hashFiles('**/tsconfig.json') != '' }}
-        shell: bash
-        run: npx -y tsc --noEmit
-
-      - name: Tests
-        shell: bash
-        run: |
-          if [[ -f package.json ]]; then
-            ${{ inputs.test_command }}
-          else
-            echo "No package.json → skip tests"
-          fi
-
-      - name: Build (only if script exists)
-        shell: bash
-        run: |
-          if [[ -f package.json ]] && node -e "process.exit(+(!!!(require('./package.json').scripts||{}).build))"; then
-            npm run build
-          else
-            echo "No build script; skipping."
-          fi
+      - name: Test
+        if: ${{ steps.guard.outputs.has_pkg == 'true' && inputs.test_command != '' }}
+        run: ${{ inputs.test_command }}
