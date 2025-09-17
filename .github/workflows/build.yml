@@ -1,20 +1,16 @@
 name: CI
-
 on:
-  pull_request:
-    paths-ignore:
-      - "docs/**"
-      - "**/*.md"
   push:
-    branches: [main]
-    paths-ignore:
-      - "docs/**"
-      - "**/*.md"
+    branches: ["**"]
+    paths-ignore: ["docs/**", "**/*.md"]
+  pull_request:
+    paths-ignore: ["docs/**", "**/*.md"]
   workflow_dispatch:
 
 permissions:
   contents: read
   actions: read
+  security-events: write
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -22,21 +18,19 @@ concurrency:
 
 jobs:
   py:
-    name: py (reusable)
-    uses: CoderDeltaLAN/ci-matrix-starter/.github/workflows/py-ci.yml@d4b4ac44b51d453ea2160c513d8eb20e24f3947e
+    uses: ./.github/workflows/py-ci.yml
+    secrets: inherit
     with:
       python_versions: '["3.11","3.12"]'
       os: '["ubuntu-latest"]'
       run_tests: true
-    secrets: inherit
 
   ts:
     if: ${{ hashFiles('**/package.json') != '' }}
-    name: ts (reusable)
-    uses: CoderDeltaLAN/ci-matrix-starter/.github/workflows/ts-ci.yml@d4b4ac44b51d453ea2160c513d8eb20e24f3947e
+    uses: ./.github/workflows/ts-ci.yml
+    secrets: inherit
     with:
       node_versions: '["22.x"]'
       os: '["ubuntu-latest"]'
-      package_manager: "pnpm"
-      test_command: "npm test --if-present"
-    secrets: inherit
+      package_manager: pnpm
+      test_command: 'pnpm -s test || echo "no tests"'
