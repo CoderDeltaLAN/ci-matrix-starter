@@ -14,6 +14,7 @@ on:
 
 permissions:
   contents: read
+  actions: read
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -22,7 +23,7 @@ concurrency:
 jobs:
   py:
     name: py (reusable)
-    uses: CoderDeltaLAN/ci-matrix-starter/.github/workflows/py-ci.yml@feat/ci-reusables-solid
+    uses: CoderDeltaLAN/ci-matrix-starter/.github/workflows/py-ci.yml@d4b4ac44b51d453ea2160c513d8eb20e24f3947e
     with:
       python_versions: '["3.11","3.12"]'
       os: '["ubuntu-latest"]'
@@ -32,7 +33,7 @@ jobs:
   ts:
     if: ${{ hashFiles('**/package.json') != '' }}
     name: ts (reusable)
-    uses: CoderDeltaLAN/ci-matrix-starter/.github/workflows/ts-ci.yml@feat/ci-reusables-solid
+    uses: CoderDeltaLAN/ci-matrix-starter/.github/workflows/ts-ci.yml@d4b4ac44b51d453ea2160c513d8eb20e24f3947e
     with:
       node_versions: '["22.x"]'
       os: '["ubuntu-latest"]'
