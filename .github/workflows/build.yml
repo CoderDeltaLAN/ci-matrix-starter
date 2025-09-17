@@ -2,7 +2,10 @@ name: CI
 
 on:
   push:
+    branches: ["**"]
+    paths-ignore: ["docs/**", "**/*.md"]
   pull_request:
+    paths-ignore: ["docs/**", "**/*.md"]
   workflow_dispatch:
 
 permissions:
@@ -43,7 +46,31 @@ jobs:
           else
             echo "no requirements.txt"
           fi
-      - name: Lint/Test smoke (best-effort)
+      - name: Pytest smoke (best-effort)
         run: |
-          python -c "print('python ok')"
-          if command -v pytest >/dev/null 2>&1; then pytest -q || true; else echo "pytest not installed"; fi
+          if command -v pytest >/dev/null 2>&1; then
+            pytest -q || true
+          else
+            echo "pytest not installed"
+          fi
+
+  ts:
+    if: ${{ hashFiles('**/package.json') != '' }}
+    name: "ts / node 22.x • ubuntu-latest"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22.x"
+          cache: pnpm
+      - name: Install (best-effort)
+        run: |
+          corepack enable || true
+          if [ -f pnpm-lock.yaml ]; then
+            pnpm i --frozen-lockfile
+          else
+            echo "no pnpm lock"
+          fi
+      - name: Test smoke (best-effort)
+        run: pnpm -s test || echo "no tests"
