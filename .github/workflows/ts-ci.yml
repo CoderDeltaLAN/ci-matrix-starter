@@ -29,6 +29,8 @@ concurrency:
 
 jobs:
   build:
+    # Solo corre si existe al menos un package.json en el repo
+    if: ${{ hashFiles('**/package.json') != '' }}
     name: node ${{ matrix.node }} • ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
@@ -54,6 +56,9 @@ jobs:
       - name: Install dependencies (lockfile-aware)
         shell: bash
         run: |
+          if [[ ! -f package.json ]]; then
+            echo "No package.json → skip install"; exit 0
+          fi
           if [[ -f pnpm-lock.yaml ]]; then
             pnpm i --frozen-lockfile
           elif [[ -f package-lock.json ]]; then
@@ -61,8 +66,7 @@ jobs:
           elif [[ -f yarn.lock ]]; then
             yarn install --frozen-lockfile
           else
-            npm i --package-lock-only
-            npm ci
+            npm ci || npm i
           fi
 
       - name: Prettier (check if config/files present)
@@ -83,12 +87,10 @@ jobs:
       - name: Tests
         shell: bash
         run: |
-          if [[ -n "${{ inputs.test-command }}" ]]; then
-            ${{
-              inputs.test-command
-            }}
+          if [[ -f package.json ]]; then
+            ${{ inputs.test-command }}
           else
-            echo "No test command provided; skipping."
+            echo "No package.json → skip tests"
           fi
 
       - name: Build (only if script exists)
