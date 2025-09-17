@@ -2,8 +2,14 @@ name: CI
 
 on:
   pull_request:
+    paths-ignore:
+      - "docs/**"
+      - "**/*.md"
   push:
     branches: [main]
+    paths-ignore:
+      - "docs/**"
+      - "**/*.md"
   workflow_dispatch:
 
 permissions:
@@ -16,20 +22,18 @@ concurrency:
 jobs:
   py:
     name: py (reusable)
-    uses: CoderDeltaLAN/ci-matrix-starter/.github/workflows/py-ci.yml@feat/ci-reusables-solid
+    uses: ./.github/workflows/py-ci.yml
     with:
       python_versions: '["3.11","3.12"]'
       os: '["ubuntu-latest"]'
       run_tests: true
-    secrets: inherit
 
   ts:
     if: ${{ hashFiles('**/package.json') != '' }}
     name: ts (reusable)
-    uses: CoderDeltaLAN/ci-matrix-starter/.github/workflows/ts-ci.yml@feat/ci-reusables-solid
+    uses: ./.github/workflows/ts-ci.yml
     with:
       node_versions: '["22.x"]'
       os: '["ubuntu-latest"]'
       package_manager: "pnpm"
       test_command: "npm test --if-present"
-    secrets: inherit
