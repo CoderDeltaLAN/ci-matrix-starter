@@ -33,5 +33,17 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python }}
-      - name: Smoke
-        run: python -V
+          cache: pip
+      - name: Preflight
+        run: python -V && pip -V
+      - name: Install (best-effort)
+        run: |
+          if [ -f requirements.txt ]; then
+            pip install -r requirements.txt
+          else
+            echo "no requirements.txt"
+          fi
+      - name: Lint/Test smoke (best-effort)
+        run: |
+          python -c "print('python ok')"
+          if command -v pytest >/dev/null 2>&1; then pytest -q || true; else echo "pytest not installed"; fi
