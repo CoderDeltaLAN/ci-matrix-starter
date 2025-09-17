@@ -22,18 +22,20 @@ concurrency:
 jobs:
   py:
     name: py (reusable)
-    uses: ./.github/workflows/py-ci.yml
+    uses: CoderDeltaLAN/ci-matrix-starter/.github/workflows/py-ci.yml@feat/ci-reusables-solid
     with:
       python_versions: '["3.11","3.12"]'
       os: '["ubuntu-latest"]'
       run_tests: true
+    secrets: inherit
 
   ts:
     if: ${{ hashFiles('**/package.json') != '' }}
     name: ts (reusable)
-    uses: ./.github/workflows/ts-ci.yml
+    uses: CoderDeltaLAN/ci-matrix-starter/.github/workflows/ts-ci.yml@feat/ci-reusables-solid
     with:
       node_versions: '["22.x"]'
       os: '["ubuntu-latest"]'
       package_manager: "pnpm"
       test_command: "npm test --if-present"
+    secrets: inherit
