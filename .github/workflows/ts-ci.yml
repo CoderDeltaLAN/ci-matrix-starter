@@ -1,54 +1,101 @@
-name: ts-ci
+name: "TypeScript/Node CI (reusable)"
+
 on:
   workflow_call:
     inputs:
-      node-version:
-        required: false
+      node-versions:
         type: string
-        default: "20"
-  workflow_dispatch:
+        required: false
+        default: '["22.x"]'
+      os:
+        type: string
+        required: false
+        default: '["ubuntu-latest"]'
+      package-manager:
+        type: string
+        required: false
+        default: "pnpm"
+      test-command:
+        type: string
+        required: false
+        default: "npm test --if-present"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  ts:
-    runs-on: ubuntu-latest
+  build:
+    name: node ${{ matrix.node }} • ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        node: ${{ fromJson(inputs.node-versions) }}
+        os: ${{ fromJson(inputs.os) }}
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          # version: 9  # commented to defer to package.json packageManager
-          run_install: false
-
-      - name: Setup Node
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ inputs.node-version }}
-          cache: pnpm
-          cache-dependency-path: pnpm-lock.yaml
+          node-version: ${{ matrix.node }}
+          cache: ${{ inputs.package-manager }}
 
-      - name: Install deps
+      - name: Enable Corepack (pnpm/yarn)
+        shell: bash
         run: |
-          if [ -f pnpm-lock.yaml ]; then
-            pnpm install --frozen-lockfile
+          corepack enable || true
+          corepack prepare pnpm@latest --activate || true
+
+      - name: Install dependencies (lockfile-aware)
+        shell: bash
+        run: |
+          if [[ -f pnpm-lock.yaml ]]; then
+            pnpm i --frozen-lockfile
+          elif [[ -f package-lock.json ]]; then
+            npm ci
+          elif [[ -f yarn.lock ]]; then
+            yarn install --frozen-lockfile
           else
-            pnpm install --no-frozen-lockfile
+            npm i --package-lock-only
+            npm ci
           fi
 
-      - name: ESLint
-        if: ${{ hashFiles('**/eslint.config.*', '**/.eslintrc*') != '' && hashFiles('**/*.{js,jsx,ts,tsx,mjs,cjs}') != '' }}
-        run: npx -y eslint . --ext .ts,.tsx,.js,.jsx,.mjs,.cjs || true
+      - name: Prettier (check if config/files present)
+        if: ${{ hashFiles('**/.prettierrc*','**/prettier.config.*','**/*.js','**/*.ts','**/*.tsx') != '' }}
+        shell: bash
+        run: npx -y prettier -c .
 
-      - name: Prettier (check)
-        if: ${{ hashFiles('**/*.{js,jsx,ts,tsx,mjs,cjs}') != '' }}
-        run: |
-          FILES="$(git ls-files '*.ts' '*.tsx' '*.js' '*.jsx' '*.mjs' '*.cjs' 2>/dev/null || true)"
-          if [ -n "$FILES" ]; then
-            npx -y prettier -c $FILES --ignore-path .prettierignore
-          else
-            echo "No JS/TS files to check."
-          fi
+      - name: ESLint (only if config exists)
+        if: ${{ hashFiles('**/.eslintrc*') != '' }}
+        shell: bash
+        run: npx -y eslint . --max-warnings=0
+
+      - name: Type check (only if tsconfig exists)
+        if: ${{ hashFiles('**/tsconfig.json') != '' }}
+        shell: bash
+        run: npx -y tsc --noEmit
 
       - name: Tests
-        run: pnpm test -r || npm test
+        shell: bash
+        run: |
+          if [[ -n "${{ inputs.test-command }}" ]]; then
+            ${{
+              inputs.test-command
+            }}
+          else
+            echo "No test command provided; skipping."
+          fi
+
+      - name: Build (only if script exists)
+        shell: bash
+        run: |
+          if [[ -f package.json ]] && node -e "process.exit(+(!!!(require('./package.json').scripts||{}).build))"; then
+            npm run build
+          else
+            echo "No build script; skipping."
+          fi
