@@ -1,11 +1,34 @@
 name: CI
+
 on:
+  pull_request:
   push:
     branches: [main]
-  pull_request:
   workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   py:
+    name: py (reusable)
     uses: ./.github/workflows/py-ci.yml
+    with:
+      python-versions: '["3.11","3.12"]'
+      os: '["ubuntu-latest"]'
+      run-tests: true
+
   ts:
+    # Solo crea el job si hay al menos un package.json en el repo
+    if: ${{ hashFiles('**/package.json') != '' }}
+    name: ts (reusable)
     uses: ./.github/workflows/ts-ci.yml
+    with:
+      node-versions: '["22.x"]'
+      os: '["ubuntu-latest"]'
+      package-manager: "pnpm"
+      test-command: "npm test --if-present"
