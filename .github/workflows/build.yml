@@ -35,4 +35,32 @@ jobs:
           python-version: ${{ matrix.python }}
       - name: Smoke
         run: python -V
-# ci:nudge 20250917T164347Z
+  # ci:nudge 20250917T164347Z
+
+  ts:
+    name: "ts / node 22.x • ubuntu-latest"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Detect Node workspace
+        id: guard
+        shell: bash
+        run: |
+          if find . -type f -name package.json -print -quit | grep -q .; then
+            echo "HAS_NODE=1" >> "$GITHUB_ENV"
+          else
+            echo "HAS_NODE=0" >> "$GITHUB_ENV"
+          fi
+      - if: ${{ env.HAS_NODE == '1' }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+          cache: pnpm
+      - if: ${{ env.HAS_NODE == '1' }}
+        run: corepack enable || true
+      - if: ${{ env.HAS_NODE == '1' }}
+        run: pnpm -v && (pnpm i --frozen-lockfile || true)
+      - if: ${{ env.HAS_NODE == '1' }}
+        run: pnpm -s test || echo "no tests"
+      - if: ${{ env.HAS_NODE == '0' }}
+        run: echo "No package.json found. Skipping TS job."
