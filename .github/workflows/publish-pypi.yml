@@ -1,22 +1,25 @@
 name: publish-pypi
+
 on:
-  workflow_dispatch:
   push:
-    tags: ["v*"]
+    tags:
+      - "v*"
+
 permissions:
   contents: read
-  id-token: write
+  id-token: write # Trusted Publisher
+
 jobs:
-  build-publish:
+  build-and-publish:
     name: Build & publish to PyPI
     runs-on: ubuntu-latest
-    environment: pypi
     steps:
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.ref }}
           fetch-depth: 0
           fetch-tags: false
+
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
