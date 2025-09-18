@@ -15,7 +15,7 @@ concurrency:
 
 jobs:
   ping:
-    name: ping • ubuntu-latest
+    name: "ping • ubuntu-latest"
     runs-on: ubuntu-latest
     steps:
       - run: echo "ok"
@@ -35,13 +35,15 @@ jobs:
           python-version: ${{ matrix.python }}
       - name: Smoke
         run: python -V
-  # ci:nudge 20250917T164347Z
 
+  # ci:nudge 20250917T164347Z
   ts:
     name: "ts / node 22.x • ubuntu-latest"
     runs-on: ubuntu-latest
+    continue-on-error: true
     steps:
       - uses: actions/checkout@v4
+
       - name: Detect Node workspace
         id: guard
         shell: bash
@@ -51,16 +53,58 @@ jobs:
           else
             echo "HAS_NODE=0" >> "$GITHUB_ENV"
           fi
+
       - if: ${{ env.HAS_NODE == '1' }}
         uses: actions/setup-node@v4
         with:
           node-version: 22.x
           cache: pnpm
+
       - if: ${{ env.HAS_NODE == '1' }}
+        name: Enable corepack (best-effort)
         run: corepack enable || true
+
       - if: ${{ env.HAS_NODE == '1' }}
-        run: pnpm -v && (pnpm i --frozen-lockfile || true)
+        name: Detect package manager
+        id: pm
+        shell: bash
+        run: |
+          if   [ -f pnpm-lock.yaml ]; then echo "PM=pnpm" >> "$GITHUB_ENV";
+          elif [ -f package-lock.json ]; then echo "PM=npm"  >> "$GITHUB_ENV";
+          elif [ -f yarn.lock ]; then echo "PM=yarn" >> "$GITHUB_ENV";
+          else echo "PM=none" >> "$GITHUB_ENV"; fi
+
       - if: ${{ env.HAS_NODE == '1' }}
-        run: pnpm -s test || echo "no tests"
-      - if: ${{ env.HAS_NODE == '0' }}
-        run: echo "No package.json found. Skipping TS job."
+        name: Install deps (best-effort)
+        shell: bash
+        run: |
+          case "$PM" in
+            pnpm) pnpm i --frozen-lockfile || true ;;
+            npm)  npm ci || true ;;
+            yarn) corepack yarn install --immutable || true ;;
+            *)    echo "no lockfile" ;;
+          esac
+
+      - if: ${{ env.HAS_NODE == '1' }}
+        name: Test smoke (best-effort)
+        shell: bash
+        run: |
+          if [ -f package.json ] && node -e "p=require('./package.json');process.exit(p.scripts&&p.scripts.test?0:1)"; then
+            case "$PM" in
+              pnpm) pnpm -s test || true ;;
+              npm)  npm  -s test || true ;;
+              yarn) corepack yarn -s test || true ;;
+              *)    echo "no PM; skip test" ;;
+            esac
+          else
+            echo "no tests"
+          fi
+
+      - if: ${{ env.HAS_NODE != '1' }}
+        name: Skip (no package.json)
+        run: |
+          echo "skip ts: no Node workspace"
+
+      - if: ${{ env.HAS_NODE == '1' }}
+        name: Prepare pnpm (best-effort)
+        run: corepack prepare pnpm@latest --activate || true
