@@ -16,9 +16,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ github.ref }}
           fetch-depth: 0
-          fetch-tags: false
+          fetch-tags: true
 
       - uses: actions/setup-python@v5
         with:
@@ -36,7 +35,11 @@ jobs:
         shell: bash
         run: |
           PYPROJECT_VERSION=$(python - <<'PY'
-          import tomllib, sys
+          import sys
+          try:
+              import tomllib
+          except Exception:
+              import tomli as tomllib
           d = tomllib.load(open("pyproject.toml","rb"))
           v = (d.get("project") or {}).get("version") \
               or (d.get("tool", {}).get("poetry") or {}).get("version")
