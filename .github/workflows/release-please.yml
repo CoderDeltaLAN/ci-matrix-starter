@@ -1,0 +1,34 @@
+name: release-please
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write # crear tags/releases
+  pull-requests: write
+  issues: write
+
+jobs:
+  release:
+    name: Create releases with release-please
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Run release-please
+        uses: google-github-actions/release-please-action@v3
+        with:
+          release-type: python
+          package-name: ci-matrix-starter # cambia si tu paquete se llama distinto
+          token: ${{ secrets.GITHUB_TOKEN }}
+          bump-minor-pre-major: true
+          version-file: pyproject.toml
+          draft: false
