@@ -1,0 +1,26 @@
+name: Auto-merge Dependabot when green
+on:
+  pull_request:
+    types: [labeled, synchronize, reopened, ready_for_review]
+  check_suite:
+    types: [completed]
+permissions:
+  contents: write
+  pull-requests: write
+jobs:
+  enable-automerge:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Find green Dependabot PRs
+        uses: peter-evans/find-pull-request@v3
+        id: find
+        with:
+          author: dependabot[bot]
+          state: open
+          base: main
+      - name: Enable auto-merge (squash)
+        if: steps.find.outputs.pull-requests != ''
+        uses: peter-evans/enable-pull-request-automerge@v3
+        with:
+          pull-request-number: ${{ fromJson(steps.find.outputs.pull-requests)[0].number }}
+          merge-method: squash
