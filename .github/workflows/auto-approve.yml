@@ -1,27 +1,15 @@
-name: Auto-approve
+name: Auto-approve Dependabot
 on:
-  workflow_dispatch:
-    inputs:
-      pr_number:
-        description: "PR number to approve"
-        required: true
+  pull_request:
+    types: [opened, ready_for_review, synchronize]
 permissions:
   pull-requests: write
+  contents: read
 jobs:
   approve:
-    name: Approve PR
+    if: github.actor == 'dependabot[bot]'
     runs-on: ubuntu-latest
     steps:
-      - name: Approve via API
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          REPO: ${{ github.repository }}
-          PR: ${{ inputs.pr_number }}
-        run: |
-          set -euo pipefail
-          curl -sS -X POST \
-            -H "Authorization: Bearer ${GH_TOKEN}" \
-            -H "Accept: application/vnd.github+json" \
-            "https://api.github.com/repos/${REPO}/pulls/${PR}/reviews" \
-            -d '{"event":"APPROVE"}'
-          echo "Approved PR #${PR} as github-actions[bot]"
+      - uses: hmarr/auto-approve-action@v4
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}

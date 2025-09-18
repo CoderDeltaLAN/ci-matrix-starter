@@ -15,7 +15,7 @@ concurrency:
 
 jobs:
   ping:
-    name: ping • ubuntu-latest
+    name: "ping • ubuntu-latest"
     runs-on: ubuntu-latest
     steps:
       - run: echo "ok"
@@ -58,15 +58,17 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22.x
-          check-latest: false
+          cache: pnpm
 
       - if: ${{ env.HAS_NODE == '1' }}
-        name: Prepare pnpm (best-effort)
+        name: Ensure pnpm
         shell: bash
         run: |
-          corepack enable || true
-          corepack prepare pnpm@9 --activate || true
-          pnpm --version || true
+          if ! command -v pnpm >/dev/null 2>&1; then
+            corepack enable || true
+            corepack prepare pnpm@latest --activate || true
+          fi
+          pnpm -v || echo "pnpm not found (best-effort)"
 
       - if: ${{ env.HAS_NODE == '1' }}
         name: Detect package manager
