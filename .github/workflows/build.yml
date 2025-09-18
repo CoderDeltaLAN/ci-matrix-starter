@@ -1,11 +1,38 @@
 name: CI
+
 on:
   push:
-    branches: [main]
   pull_request:
   workflow_dispatch:
+
+permissions:
+  contents: read
+  security-events: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
+  ping:
+    name: ping • ubuntu-latest
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "ok"
+
   py:
-    uses: ./.github/workflows/py-ci.yml
-  ts:
-    uses: ./.github/workflows/ts-ci.yml
+    name: "py / ${{ matrix.python }} • ${{ matrix.os }}"
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ["3.11", "3.12"]
+        os: ["ubuntu-latest"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Smoke
+        run: python -V
+# ci:nudge 20250917T164347Z

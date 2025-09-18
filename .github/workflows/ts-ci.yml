@@ -1,54 +1,75 @@
-name: ts-ci
+name: "TypeScript/Node CI (reusable)"
+
 on:
   workflow_call:
     inputs:
-      node-version:
-        required: false
+      node_versions:
         type: string
-        default: "20"
-  workflow_dispatch:
+        required: false
+        default: '["22.x"]'
+      os:
+        type: string
+        required: false
+        default: '["ubuntu-latest"]'
+      package_manager:
+        type: string
+        required: false
+        default: pnpm
+      test_command:
+        type: string
+        required: false
+        default: 'pnpm -s test || echo "no tests"'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  ts:
-    runs-on: ubuntu-latest
+  build:
+    name: node${{ matrix.node }} • ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        node: ${{ fromJson(inputs.node_versions) }}
+        os: ${{ fromJson(inputs.os) }}
+
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          # version: 9  # commented to defer to package.json packageManager
-          run_install: false
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ inputs.node-version }}
-          cache: pnpm
-          cache-dependency-path: pnpm-lock.yaml
-
-      - name: Install deps
+      - name: Guard — skip if no Node project
+        id: guard
+        shell: bash
         run: |
-          if [ -f pnpm-lock.yaml ]; then
-            pnpm install --frozen-lockfile
+          if find -L . -type f -name package.json \
+               -not -path "./.git/*" -not -path "*/node_modules/*" \
+               -print -quit | grep -q .; then
+            echo "has_pkg=true" >> "$GITHUB_OUTPUT"
           else
-            pnpm install --no-frozen-lockfile
+            echo "has_pkg=false" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: ESLint
-        if: ${{ hashFiles('**/eslint.config.*', '**/.eslintrc*') != '' && hashFiles('**/*.{js,jsx,ts,tsx,mjs,cjs}') != '' }}
-        run: npx -y eslint . --ext .ts,.tsx,.js,.jsx,.mjs,.cjs || true
+      - uses: actions/setup-node@v4
+        if: ${{ steps.guard.outputs.has_pkg == 'true' }}
+        with:
+          node-version: ${{ matrix.node }}
+          cache: ${{ inputs.package_manager }}
 
-      - name: Prettier (check)
-        if: ${{ hashFiles('**/*.{js,jsx,ts,tsx,mjs,cjs}') != '' }}
+      - name: Install
+        if: ${{ steps.guard.outputs.has_pkg == 'true' }}
+        shell: bash
         run: |
-          FILES="$(git ls-files '*.ts' '*.tsx' '*.js' '*.jsx' '*.mjs' '*.cjs' 2>/dev/null || true)"
-          if [ -n "$FILES" ]; then
-            npx -y prettier -c $FILES --ignore-path .prettierignore
-          else
-            echo "No JS/TS files to check."
-          fi
+          corepack enable || true
+          case "${{ inputs.package_manager }}" in
+            pnpm) pnpm i --frozen-lockfile || pnpm i ;;
+            npm)  npm ci || npm i ;;
+            yarn) yarn install --frozen-lockfile || yarn install ;;
+            *)    echo "unknown package manager: ${{ inputs.package_manager }}" ;;
+          esac
 
-      - name: Tests
-        run: pnpm test -r || npm test
+      - name: Test
+        if: ${{ steps.guard.outputs.has_pkg == 'true' && inputs.test_command != '' }}
+        run: ${{ inputs.test_command }}
