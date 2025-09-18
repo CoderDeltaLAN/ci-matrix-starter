@@ -1,15 +1,11 @@
 name: publish-pypi
-
 on:
   workflow_dispatch:
   push:
-    tags:
-      - "v*"
-
+    tags: ["v*"]
 permissions:
   contents: read
   id-token: write
-
 jobs:
   build-publish:
     name: Build & publish to PyPI
@@ -17,6 +13,8 @@ jobs:
     environment: pypi
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-tags: true
 
       - uses: actions/setup-python@v5
         with:
@@ -34,12 +32,17 @@ jobs:
         shell: bash
         run: |
           PYPROJECT_VERSION=$(python - <<'PY'
-          import tomllib
-          print(tomllib.load(open("pyproject.toml","rb"))["project"]["version"])
+          import tomllib, sys
+          d = tomllib.load(open("pyproject.toml","rb"))
+          v = (d.get("project") or {}).get("version") \
+              or (d.get("tool", {}).get("poetry") or {}).get("version")
+          if not v:
+              sys.exit(2)
+          print(v)
           PY
           )
           TAG="${GITHUB_REF_NAME#v}"
-          echo "pyproject.toml: $PYPROJECT_VERSION / tag: $TAG"
+          echo "pyproject/poetry: $PYPROJECT_VERSION / tag: $TAG"
           test "$TAG" = "$PYPROJECT_VERSION"
 
       - name: Publish to PyPI (Trusted Publisher)

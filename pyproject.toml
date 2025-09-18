@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "ci-matrix-starter"
-version = "0.1.0"
+version = "0.1.4"
 description = "Reusable CI workflows for Py/TS with SBOM & signatures."
 authors = ["CoderDeltaLAN <coderdeltalan.cargo784@8alias.com>"]
 readme = "README.md"
