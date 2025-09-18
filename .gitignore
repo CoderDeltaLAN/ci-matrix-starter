@@ -7,3 +7,5 @@ node_modules/
 .mypy_cache/
 .pytest_cache/
 sbom-*.json
+.github/workflows/*.bak.*
+pyproject.toml.bak

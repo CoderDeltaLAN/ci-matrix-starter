@@ -1,3 +1,36 @@
+<p align="center">
+  <img src="https://raw.githubusercontent.com/CoderDeltaLAN/ci-matrix-starter/main/.github/assets/banner.png" alt="ci-matrix-starter" width="640"/>
+</p>
+
+<p align="center">
+  <a href="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/build.yml">
+    <img alt="CI" src="https://img.shields.io/github/actions/workflow/status/CoderDeltaLAN/ci-matrix-starter/build.yml?label=CI&logo=githubactions">
+  </a>
+  <a href="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/codeql.yml">
+    <img alt="CodeQL" src="https://img.shields.io/github/actions/workflow/status/CoderDeltaLAN/ci-matrix-starter/codeql.yml?label=CodeQL&logo=github">
+  </a>
+  <a href="https://pypi.org/project/ci-matrix-starter/">
+    <img alt="PyPI" src="https://img.shields.io/pypi/v/ci-matrix-starter.svg?logo=pypi">
+  </a>
+  <a href="https://pepy.tech/project/ci-matrix-starter">
+    <img alt="Downloads" src="https://static.pepy.tech/badge/ci-matrix-starter">
+  </a>
+  <a href="https://github.com/CoderDeltaLAN/ci-matrix-starter/blob/main/LICENSE">
+    <img alt="License" src="https://img.shields.io/github/license/CoderDeltaLAN/ci-matrix-starter">
+  </a>
+  <a href="https://www.paypal.com/donate/?hosted_button_id=YVENCBNCZWVPW">
+    <img alt="Sponsor" src="https://img.shields.io/badge/Sponsor-PayPal-blue?logo=paypal">
+  </a>
+</p>
+
+<h1 align="center">Reusable GitHub Actions CI for Python & TypeScript</h1>
+
+**ci-matrix-starter** es una plantilla CI reusable que entrega matrices Py/TS listas para producción con:
+**always-green CI**, **SBOM**, **CodeQL**, **pre-commit**, **Dependabot auto-merge** y **Publicación a PyPI (Trusted Publisher OIDC)**.
+Ideal para equipos que necesitan **DevSecOps** inmediato y verificable.
+
+> _Keywords_: github actions, reusable workflows, python, typescript, pnpm, node, sbom, sigstore, cosign, codeql, pre-commit, dependabot, pypi, devsecops, supply-chain, always-green ci, matrix.
+
 # ⭐ ci-matrix-starter — Reusable CI Workflows (Python & TypeScript)
 
 A lean, production-ready **GitHub Actions starter** that ships **reusable CI workflows** for **Python (3.11/3.12)** and **TypeScript/Node 20**.

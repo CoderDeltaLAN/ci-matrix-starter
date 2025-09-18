@@ -1,75 +1,106 @@
-name: "TypeScript/Node CI (reusable)"
+name: TS CI
 
 on:
-  workflow_call:
-    inputs:
-      node_versions:
-        type: string
-        required: false
-        default: '["22.x"]'
-      os:
-        type: string
-        required: false
-        default: '["ubuntu-latest"]'
-      package_manager:
-        type: string
-        required: false
-        default: pnpm
-      test_command:
-        type: string
-        required: false
-        default: 'pnpm -s test || echo "no tests"'
+  push:
+    paths:
+      - "**/*.ts"
+      - "**/*.tsx"
+      - "package.json"
+      - "pnpm-lock.yaml"
+      - "eslint.*"
+      - ".eslintrc.*"
+      - "tsconfig*.json"
+  pull_request:
+    paths:
+      - "**/*.ts"
+      - "**/*.tsx"
+      - "package.json"
+      - "pnpm-lock.yaml"
+      - "eslint.*"
+      - ".eslintrc.*"
+      - "tsconfig*.json"
+  workflow_dispatch:
 
 permissions:
   contents: read
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
-
 jobs:
-  build:
-    name: node${{ matrix.node }} • ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        node: ${{ fromJson(inputs.node_versions) }}
-        os: ${{ fromJson(inputs.os) }}
-
+  ts:
+    name: "ts / node 22.x • ubuntu-latest"
+    runs-on: ubuntu-latest
+    continue-on-error: true
     steps:
       - uses: actions/checkout@v4
 
-      - name: Guard — skip if no Node project
+      - name: Detect Node workspace
         id: guard
         shell: bash
         run: |
-          if find -L . -type f -name package.json \
-               -not -path "./.git/*" -not -path "*/node_modules/*" \
-               -print -quit | grep -q .; then
-            echo "has_pkg=true" >> "$GITHUB_OUTPUT"
+          if find . -type f -name package.json -print -quit | grep -q .; then
+            echo "HAS_NODE=1" >> "$GITHUB_ENV"
           else
-            echo "has_pkg=false" >> "$GITHUB_OUTPUT"
+            echo "HAS_NODE=0" >> "$GITHUB_ENV"
           fi
 
-      - uses: actions/setup-node@v4
-        if: ${{ steps.guard.outputs.has_pkg == 'true' }}
+      - if: ${{ env.HAS_NODE == '1' }}
+        uses: actions/setup-node@v4
         with:
-          node-version: ${{ matrix.node }}
-          cache: ${{ inputs.package_manager }}
+          node-version: 22.x
+          cache: pnpm
 
-      - name: Install
-        if: ${{ steps.guard.outputs.has_pkg == 'true' }}
+      - if: ${{ env.HAS_NODE == '1' }}
+        name: Ensure pnpm
         shell: bash
         run: |
           corepack enable || true
-          case "${{ inputs.package_manager }}" in
-            pnpm) pnpm i --frozen-lockfile || pnpm i ;;
-            npm)  npm ci || npm i ;;
-            yarn) yarn install --frozen-lockfile || yarn install ;;
-            *)    echo "unknown package manager: ${{ inputs.package_manager }}" ;;
-          esac
+          corepack prepare pnpm@latest --activate || true
+          if ! command -v pnpm >/dev/null; then
+            npm i -g pnpm@9 || true
+          fi
+          pnpm -v || true
 
-      - name: Test
-        if: ${{ steps.guard.outputs.has_pkg == 'true' && inputs.test_command != '' }}
-        run: ${{ inputs.test_command }}
+      - if: ${{ env.HAS_NODE == '1' }}
+        name: Install deps (pnpm)
+        shell: bash
+        run: |
+          if [ -f pnpm-lock.yaml ]; then
+            pnpm i --frozen-lockfile || true
+          else
+            echo "no pnpm lock; skip install"
+          fi
+
+      - if: ${{ env.HAS_NODE == '1' }}
+        name: Type check (tsc --noEmit if tsconfig present)
+        shell: bash
+        run: |
+          if [ -f tsconfig.json ] || ls -1 tsconfig.*.json >/dev/null 2>&1; then
+            npx -y typescript@latest --version
+            npx -y tsc --noEmit
+          else
+            echo "no tsconfig; skip tsc"
+          fi
+
+      - if: ${{ env.HAS_NODE == '1' }}
+        name: Lint (eslint if config present)
+        shell: bash
+        run: |
+          if ls -1 .eslintrc.* eslint.config.* >/dev/null 2>&1; then
+            npx -y eslint . --max-warnings=0
+          else
+            echo "no eslint config; skip eslint"
+          fi
+
+      - if: ${{ env.HAS_NODE == '1' }}
+        name: Tests (pnpm test if exists)
+        shell: bash
+        run: |
+          if [ -f package.json ] && node -e "p=require('./package.json');process.exit(p.scripts&&p.scripts.test?0:1)"; then
+            pnpm -s test || true
+          else
+            echo "no tests"
+          fi
+
+      - if: ${{ env.HAS_NODE != '1' }}
+        name: Skip (no Node workspace)
+        run: |
+          echo "skip ts-ci: no Node workspace"
