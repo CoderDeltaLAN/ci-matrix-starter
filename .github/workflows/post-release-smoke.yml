@@ -1,0 +1,48 @@
+name: post-release-smoke
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    name: Post-release smoke on PyPI
+    runs-on: ubuntu-latest
+    env:
+      PKG: ci-matrix-starter
+      TAG_NAME: ${{ github.event.release.tag_name }}
+
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+
+      - name: Wait until version is visible on PyPI
+        run: |
+          TAG="${TAG_NAME#v}"
+          count=0
+          while [ "$count" -lt 30 ]; do
+            ver="$(curl -fsSL "https://pypi.org/pypi/${PKG}/json" 2>/dev/null \
+              | python -c 'import sys,json; d=json.load(sys.stdin); print((d.get("info") or {}).get("version") or "")')"
+            if [ "$ver" = "$TAG" ]; then
+              printf "✅ PyPI has %s==%s\n" "$PKG" "$ver"
+              break
+            fi
+            printf "⏳ Waiting PyPI index to show %s==%s (got: %s)\n" "$PKG" "$TAG" "$ver"
+            sleep 10
+            count=$((count+1))
+          done
+          test "$ver" = "$TAG"
+
+      - name: Install from PyPI
+        run: |
+          python -m pip install --upgrade pip
+          pip install "$PKG==${TAG_NAME#v}"
+
+      - name: Import check
+        run: |
+          python -c 'import importlib; m=importlib.import_module("ci_matrix_starter"); print("✅ import ok:", m.__name__)'
