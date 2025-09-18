@@ -1,0 +1,109 @@
+name: release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+  id-token: write
+
+env:
+  PKG_NAME: ci-matrix-starter
+
+jobs:
+  verify:
+    name: Verify tag == project version (and package.json if exists)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Read version from pyproject (project/tool.poetry)
+        id: pyver
+        shell: bash
+        run: |
+          python - <<'PY' > version.txt
+          import sys, tomllib, pathlib
+          d = tomllib.loads(pathlib.Path("pyproject.toml").read_bytes())
+          v = (d.get("project") or {}).get("version") \
+              or (d.get("tool",{}).get("poetry") or {}).get("version")
+          if not v: sys.exit("No version in [project] or [tool.poetry]")
+          print(v)
+          PY
+          echo "ver=$(cat version.txt)" >> "$GITHUB_OUTPUT"
+
+      - name: Check tag matches pyproject version
+        shell: bash
+        run: |
+          TAG="${GITHUB_REF_NAME#v}"
+          echo "pyproject: ${{ steps.pyver.outputs.ver }} | tag: $TAG"
+          test "$TAG" = "${{ steps.pyver.outputs.ver }}"
+
+      - name: If Node workspace exists, check package.json version too (best-effort)
+        shell: bash
+        run: |
+          if [ -f package.json ]; then
+            VPKG=$(node -pe "require('./package.json').version || ''")
+            TAG="${GITHUB_REF_NAME#v}"
+            echo "package.json: $VPKG | tag: $TAG"
+            [ -n "$VPKG" ] && [ "$VPKG" = "$TAG" ]
+          else
+            echo "no package.json -> skip"
+          fi
+
+  build_publish:
+    name: Build & publish PyPI (+ attach assets to GitHub Release)
+    needs: verify
+    runs-on: ubuntu-latest
+    environment: pypi
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+
+      - name: Install build backend
+        run: python -m pip install --upgrade pip build
+
+      - name: Build sdist & wheel
+        run: python -m build --sdist --wheel --outdir dist/
+
+      - name: Publish to PyPI (Trusted Publisher)
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          print_hash: true
+
+      - name: Create GitHub Release (auto notes) and upload assets
+        uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
+          files: |
+            dist/*.whl
+            dist/*.tar.gz
+
+  post_verify:
+    name: Cross-check PyPI & Release tag
+    needs: build_publish
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify published version on PyPI
+        shell: bash
+        run: |
+          TAG="${GITHUB_REF_NAME#v}"
+          got=$(curl -fsSL "https://pypi.org/pypi/${PKG_NAME}/json" \
+                | python -c 'import sys,json; print(json.load(sys.stdin)["info"]["version"])')
+          echo "PyPI: $got | tag: $TAG"
+          test "$got" = "$TAG"
+
+      - name: Verify GitHub Release tag exists
+        shell: bash
+        run: |
+          TAG="${GITHUB_REF_NAME}"
+          gh release view "$TAG" >/dev/null
