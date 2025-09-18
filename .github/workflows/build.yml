@@ -54,11 +54,21 @@ jobs:
             echo "HAS_NODE=0" >> "$GITHUB_ENV"
           fi
 
+      # Node sin cache integrado para evitar invocar pnpm antes de instalarlo
       - if: ${{ env.HAS_NODE == '1' }}
+        name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 22.x
-          cache: pnpm
+          # cache: pnpm   # <- REMOVIDO: provocaba "pnpm not found" en este entorno
+
+      # Garantizar pnpm en PATH (antes de cualquier uso)
+      - if: ${{ env.HAS_NODE == '1' }}
+        name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.6.0
+          run_install: false
 
       - if: ${{ env.HAS_NODE == '1' }}
         name: Enable corepack (best-effort)
