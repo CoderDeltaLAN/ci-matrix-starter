@@ -1,0 +1,19 @@
+name: py-ci-badge
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: py-ci-badge-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  py:
+    uses: ./.github/workflows/py-ci.yml
+    with:
+      py-versions: '["3.11","3.12"]'
+      cov-min: 100
