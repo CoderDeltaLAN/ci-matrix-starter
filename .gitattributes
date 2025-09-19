@@ -1,0 +1,7 @@
+* text=auto eol=lf
+
+# No incluir meta en tarballs
+.github/ export-ignore
+.tools/ export-ignore
+tests/ export-ignore
+docs/ export-ignore
