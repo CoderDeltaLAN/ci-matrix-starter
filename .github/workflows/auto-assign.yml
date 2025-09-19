@@ -1,14 +1,14 @@
 name: auto-assign
 on:
   pull_request_target:
-    types: [opened, ready_for_review, reopened, synchronize]
+    types: [opened, ready_for_review, reopened]
 permissions:
   pull-requests: write
 jobs:
   assign:
+    if: ${{ github.event.pull_request.draft == false }}
     runs-on: ubuntu-latest
     steps:
-      - uses: kentaro-m/auto-assign-action@v2.3.0
+      - uses: kentaro-m/auto-assign-action@v2.2.1
         with:
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
           configuration-path: .github/auto-assign.yml

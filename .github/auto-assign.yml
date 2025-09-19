@@ -1,5 +1,7 @@
 addReviewers: true
-addAssignees: author
+addAssignees: false
 reviewers:
   - CoderDeltaLAN
 numberOfReviewers: 1
+skipKeywords:
+  - skip-review
