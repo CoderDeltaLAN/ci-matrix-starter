@@ -1,0 +1,15 @@
+name: Python CI (reusable)
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  py:
+    uses: ./.github/workflows/py-ci.yml
+    with:
+      py-versions: '["3.11","3.12"]'
+      cov-min: 100
