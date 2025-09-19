@@ -8,8 +8,8 @@
   <a href="https://pypi.org/project/ci-matrix-starter/">
     <img alt="PyPI" src="https://img.shields.io/pypi/v/ci-matrix-starter?logo=pypi" />
   </a>
-  <a href="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/py-ci-badge.yml">
-    <img alt="Python CI (reusable)" src="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/py-ci-badge.yml/badge.svg?branch=main" />
+  <a href="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/py-ci.yml">
+    <img alt="Python CI (reusable)" src="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/py-ci.yml/badge.svg" />
   </a>
 </p>
 
