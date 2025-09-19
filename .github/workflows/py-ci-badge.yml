@@ -1,15 +1,11 @@
-name: py-ci-badge
+name: Python CI (reusable)
 on:
-  workflow_dispatch:
   push:
     branches: [main]
+  workflow_dispatch:
 
 permissions:
   contents: read
-
-concurrency:
-  group: py-ci-badge-${{ github.ref }}
-  cancel-in-progress: true
 
 jobs:
   py:
