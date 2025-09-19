@@ -1,3 +1,5 @@
+[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/CoderDeltaLAN/ci-matrix-starter/badge)](https://securityscorecards.dev/viewer/?uri=github.com/CoderDeltaLAN/ci-matrix-starter)
+
 # ⭐ ci-matrix-starter — Reusable CI Workflows (Python & TypeScript)
 
 A lean, production-ready **GitHub Actions starter** that ships **reusable CI workflows** for **Python (3.11/3.12)** and **TypeScript/Node 20**.
