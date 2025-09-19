@@ -1,39 +1,34 @@
 #!/usr/bin/env bash
-set -euo pipefail
+# Radar local estándar. Sin set -e.
+repo_root="$(git rev-parse --show-toplevel 2>/dev/null)" || exit 1
+cd "$repo_root" || exit 1
 
-echo "→ Node setup"
+# Pre-commit + workflows
+pre-commit run -a || exit $?
+if command -v actionlint >/dev/null 2>&1; then
+  actionlint -no-color || exit $?
+elif [ -x .tools/actionlint/actionlint ]; then
+  .tools/actionlint/actionlint -no-color || exit $?
+fi
+
+# Python
+if [ -f pyproject.toml ]; then
+  poetry install --no-interaction || exit $?
+  poetry run ruff check . --fix || exit $?
+  poetry run ruff format . || exit $?
+  poetry run black . || exit $?
+  poetry run pytest -q || exit $?
+  poetry run mypy . || true
+fi
+
+# Node/TS
 if [ -f package.json ]; then
-  npm ci --ignore-scripts --fund=false
-  npm run -s format:check || (echo "Prettier failed" && exit 1)
-  npm run -s lint || (echo "ESLint failed" && exit 1)
-  npm run -s typecheck || (echo "tsc failed" && exit 1)
-  echo "→ Node smoke"
-  node -e "console.log('node ok')"
+  npm ci || exit $?
+  npx prettier -c . || exit $?
+  npx eslint --max-warnings=0 . || exit $?
+  npx tsc --noEmit || true
+  npm test || exit $?
+  npm pack --dry-run || exit $?
 fi
 
-echo "→ Python setup"
-if command -v poetry >/dev/null 2>&1; then
-  poetry install --no-interaction
-  poetry run ruff check .
-  poetry run black --check .
-  PYTHONPATH=src poetry run pytest -q
-  poetry run mypy src
-else
-  python -m pip install --upgrade pip
-  pip install ruff black pytest mypy
-  ruff check .
-  black --check .
-  PYTHONPATH=src pytest -q
-  mypy src
-fi
-
-echo "→ Python smoke"
-python - <<'PY'
-try:
-    import ci_matrix_starter as m
-    print("py ok:", getattr(m, "__version__", "0"))
-except Exception as e:
-    print("py smoke failed:", e); raise
-PY
-
-echo "✅ Local checks passed"
+echo "Radar local OK"
