@@ -1,28 +1,3 @@
-<!-- BADGES:BEGIN -->
-<p align="left">
-  <a href="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/py-ci.yml">
-    <img alt="Python CI" src="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/py-ci.yml/badge.svg" />
-  </a>
-  <a href="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/ts-ci.yml">
-    <img alt="TS CI" src="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/ts-ci.yml/badge.svg" />
-  </a>
-  <a href="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/codeql.yml">
-    <img alt="CodeQL" src="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/codeql.yml/badge.svg" />
-  </a>
-  <a href="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/supply-chain.yml">
-    <img alt="Supply Chain" src="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/supply-chain.yml/badge.svg" />
-  </a>
-  <a href="https://pypi.org/project/ci-matrix-starter/">
-    <img alt="PyPI" src="https://img.shields.io/pypi/v/ci-matrix-starter?logo=pypi" />
-  </a>
-  <a href="https://securityscorecards.dev/viewer/?uri=github.com/CoderDeltaLAN/ci-matrix-starter">
-    <img alt="OpenSSF Scorecard" src="https://api.securityscorecards.dev/projects/github.com/CoderDeltaLAN/ci-matrix-starter/badge" />
-  </a>
-</p>
-<!-- BADGES:END -->
-
-[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/CoderDeltaLAN/ci-matrix-starter/badge)](https://securityscorecards.dev/viewer/?uri=github.com/CoderDeltaLAN/ci-matrix-starter)
-
 <!-- TOP BADGES (managed) -->
 <p align="center">
   <a href="https://securityscorecards.dev/viewer/?uri=github.com/CoderDeltaLAN/ci-matrix-starter">
