@@ -1,7 +1,11 @@
 * text=auto eol=lf
-
-# No incluir meta en tarballs
-.github/ export-ignore
-.tools/ export-ignore
-tests/ export-ignore
-docs/ export-ignore
+*.sh text eol=lf
+*.py text eol=lf
+*.ts text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.md text eol=lf
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
