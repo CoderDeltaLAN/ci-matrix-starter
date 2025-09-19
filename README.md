@@ -23,6 +23,20 @@
 
 [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/CoderDeltaLAN/ci-matrix-starter/badge)](https://securityscorecards.dev/viewer/?uri=github.com/CoderDeltaLAN/ci-matrix-starter)
 
+<!-- TOP BADGES (managed) -->
+<p align="center">
+  <a href="https://securityscorecards.dev/viewer/?uri=github.com/CoderDeltaLAN/ci-matrix-starter">
+    <img alt="openssf scorecard" src="https://api.securityscorecards.dev/projects/github.com/CoderDeltaLAN/ci-matrix-starter/badge" />
+  </a>
+  <img alt="supply-chain" src="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/supply-chain.yml/badge.svg?branch=main" />
+  <a href="https://pypi.org/project/ci-matrix-starter/">
+    <img alt="pypi" src="https://img.shields.io/pypi/v/ci-matrix-starter.svg?label=pypi" />
+  </a>
+  <img alt="Python CI (reusable)" src="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/py-ci.yml/badge.svg?branch=main" />
+</p>
+
+<!-- /TOP BADGES -->
+
 # ⭐ ci-matrix-starter — Reusable CI Workflows (Python & TypeScript)
 
 A lean, production-ready **GitHub Actions starter** that ships **reusable CI workflows** for **Python (3.11/3.12)** and **TypeScript/Node 20**.
