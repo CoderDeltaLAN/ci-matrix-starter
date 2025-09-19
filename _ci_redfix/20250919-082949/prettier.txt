@@ -1,0 +1,5 @@
+Checking formatting...
+[warn] .github/PULL_REQUEST_TEMPLATE.md
+[warn] CHANGELOG.md
+[warn] CONTRIBUTING.md
+[warn] Code style issues found in 3 files. Run Prettier with --write to fix.
