@@ -1,13 +1,7 @@
 <!-- BADGES:BEGIN -->
-<p align="left">
-  <a href="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/py-ci.yml">
-    <img alt="Python CI" src="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/py-ci.yml/badge.svg" />
-  </a>
-  <a href="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/ts-ci.yml">
-    <img alt="TS CI" src="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/ts-ci.yml/badge.svg" />
-  </a>
-  <a href="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/codeql.yml">
-    <img alt="CodeQL" src="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/codeql.yml/badge.svg" />
+<p align="center">
+  <a href="https://securityscorecards.dev/viewer/?uri=github.com/CoderDeltaLAN/ci-matrix-starter">
+    <img alt="OpenSSF Scorecard" src="https://api.securityscorecards.dev/projects/github.com/CoderDeltaLAN/ci-matrix-starter/badge" />
   </a>
   <a href="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/supply-chain.yml">
     <img alt="Supply Chain" src="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/supply-chain.yml/badge.svg" />
@@ -15,18 +9,16 @@
   <a href="https://pypi.org/project/ci-matrix-starter/">
     <img alt="PyPI" src="https://img.shields.io/pypi/v/ci-matrix-starter?logo=pypi" />
   </a>
-  <a href="https://securityscorecards.dev/viewer/?uri=github.com/CoderDeltaLAN/ci-matrix-starter">
-    <img alt="OpenSSF Scorecard" src="https://api.securityscorecards.dev/projects/github.com/CoderDeltaLAN/ci-matrix-starter/badge" />
+  <a href="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/py-ci.yml">
+    <img alt="Python CI (reusable)" src="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/py-ci.yml/badge.svg" />
   </a>
 </p>
 <!-- BADGES:END -->
 
-[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/CoderDeltaLAN/ci-matrix-starter/badge)](https://securityscorecards.dev/viewer/?uri=github.com/CoderDeltaLAN/ci-matrix-starter)
-
 # ⭐ ci-matrix-starter — Reusable CI Workflows (Python & TypeScript)
 
 A lean, production-ready **GitHub Actions starter** that ships **reusable CI workflows** for **Python (3.11/3.12)** and **TypeScript/Node 20**.
-It’s designed for **always-green CI** with strict local gates mirroring CI, **CodeQL** out of the box, optional **SBOM** generation, and guard-rails for safe merges (branch protection + required checks).
+Designed for **always-green CI** with strict local gates mirroring CI, **CodeQL** out of the box, optional **SBOM** generation, and guard-rails for safe merges.
 
 <div align="center">
 
@@ -62,11 +54,9 @@ It’s designed for **always-green CI** with strict local gates mirroring CI, **
 
 ## 🚀 Quick Start (consumers)
 
-<!-- ci-matrix-starter:usage:start -->
-
 ### Use the reusable workflows in _your_ repo
 
-Create `.github/workflows/ci.yml` in your project:
+Create `.github/workflows/ci.yml`:
 
 ```yaml
 name: CI
@@ -78,17 +68,17 @@ on:
 jobs:
   # Python matrix (3.11/3.12) with strict gates
   py:
-    uses: CoderDeltaLAN/ci-matrix-starter/.github/workflows/py-ci.yml@v0.1.0
+    uses: CoderDeltaLAN/ci-matrix-starter/.github/workflows/py-ci.yml@v0.1.7
     with:
       py-versions: '["3.11","3.12"]'
       cov-min: 100
 
   # TypeScript / Node 20
   ts:
-    uses: CoderDeltaLAN/ci-matrix-starter/.github/workflows/ts-ci.yml@v0.1.0
+    uses: CoderDeltaLAN/ci-matrix-starter/.github/workflows/ts-ci.yml@v0.1.7
 ```
 
-> Tip: the **aggregator** in this repo (`build.yml`) is a reference showing how to orchestrate multiple reusable jobs.
+> The **aggregator** in this repo (`build.yml`) shows how to orchestrate multiple reusable jobs.
 
 ### Local mirror (same gates as CI)
 
@@ -113,41 +103,37 @@ PYTHONPATH=src poetry run pytest -q --cov=src --cov-fail-under=100
 poetry run mypy src
 ```
 
-<!-- ci-matrix-starter:usage:end -->
-
-> Nothing in your shell needs to change. Consume the workflows by reference (`uses:`) and keep your repo clean.
-
 ---
 
 ## 📦 What the workflows expect
 
 **TypeScript**
 
-- `package.json` with `test` script (any test runner).
-- `tsconfig.json` limiting sources (e.g., `src/**/*.ts`).
-- `eslint.config.mjs` (flat config) and **Prettier 3**.
-- Node **20.x** recommended.
+- `package.json` with `test` script.
+- `tsconfig.json` (scope sources, e.g., `src/**/*.ts`).
+- `eslint.config.mjs` (flat) and **Prettier 3**.
+- Node **20.x**.
 
 **Python**
 
 - `pyproject.toml` with dev tools (**ruff**, **black**, **pytest**, **mypy**, **poetry**).
-- Tests under `tests/`; coverage threshold via `cov-min` input (default in example: `100`).
-- Matrix **3.11/3.12** (customizable via `py-versions`).
+- Tests under `tests/`; coverage threshold via `cov-min`.
+- Matrix **3.11/3.12** (customizable with `py-versions`).
 
 **Optional SBOM & signing**
 
-- Workflows can export SBOMs (CycloneDX). If you set `COSIGN_KEY` & `COSIGN_PASSWORD` as secrets, signing will be attempted (safe-by-default: skipped when absent).
+- SBOMs (CycloneDX) available. If `COSIGN_KEY` & `COSIGN_PASSWORD` are present, images/artifacts can be signed (safe-by-default: skipped when absent).
 
 ---
 
 ## ⛳ Required checks (CI gating)
 
-Typical required contexts (suggested for branch protection):
+Suggested branch-protection contexts:
 
 - `CI / build` (aggregator success)
-- `CodeQL Analyze / codeql` (security)
+- `CodeQL Analyze / codeql`
 
-Enable linear history, dismiss stale reviews on new pushes, and auto-merge once checks are green for a professional, low-friction flow.
+Enable linear history, dismiss stale reviews on new pushes, and auto-merge when green.
 
 ---
 
@@ -169,11 +155,11 @@ poetry run mypy src
 
 ## 🔧 CI (GitHub Actions)
 
-- Reusable jobs for **Python** and **TypeScript**; call them from your repo via `uses:` with a tag (e.g., `@v0.1.0`).
-- Built-in **CodeQL** workflow example.
+- Reusable jobs for **Python** and **TypeScript**; call them via `uses:` with a tag (e.g., `@v0.1.7`).
+- Built-in **CodeQL** example.
 - Strict, fast feedback suitable for PR auto-merge when green.
 
-Python job snippet recap:
+Python snippet:
 
 ```yaml
 - run: python -m pip install --upgrade pip
@@ -187,7 +173,7 @@ Python job snippet recap:
 - run: poetry run mypy src
 ```
 
-TypeScript job snippet recap:
+TypeScript snippet:
 
 ```yaml
 - run: npx prettier --check .
@@ -201,18 +187,18 @@ TypeScript job snippet recap:
 ## 🗺 When to Use This Project
 
 - You need **ready-to-use CI** for **Python + TypeScript** with clean defaults.
-- You want **reusable workflows** you can reference by tag.
+- You want **reusable workflows** referenced by tag.
 - You value **security** (CodeQL), **SBOMs**, and **strict gates** to keep `main` always green.
 
 ---
 
 ## 🧩 Customization
 
-- Pin a release tag, e.g., `@v0.1.0`.
+- Pin a release tag, e.g., `@v0.1.7`.
 - Adjust Python matrix: `with.py-versions`.
 - Tune coverage: `with.cov-min`.
 - Provide secrets to enable optional **cosign** signing.
-- Extend jobs by adding your own steps after `uses:` blocks.
+- Extend jobs by adding steps after `uses:`.
 
 ---
 
@@ -227,7 +213,7 @@ TypeScript job snippet recap:
 ## 🙌 Contributing
 
 - Small, atomic PRs using **Conventional Commits**.
-- Keep local & CI gates green before requesting review.
+- Keep local & CI gates green before review.
 - Use auto-merge once checks pass.
 
 ---
@@ -241,7 +227,7 @@ If this project saves you time, consider supporting ongoing maintenance. Thank y
 
 ## 🔎 SEO Keywords
 
-reusable github actions workflows, python typescript ci starter, node 20 eslint 9 prettier 3, ruff black mypy pytest, cycloneDX sbom cosign signing, codeql security analysis, branch protection auto merge, always green ci, monorepo friendly ci, strict local gates mirror
+reusable github actions workflows, python typescript ci starter, node 20 eslint 9 prettier 3, ruff black mypy pytest, cyclonedx sbom cosign signing, codeql security analysis, branch protection auto merge, always green ci, monorepo friendly ci, strict local gates mirror
 
 ---
 
