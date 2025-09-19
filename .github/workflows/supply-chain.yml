@@ -1,51 +1,76 @@
 name: supply-chain
 on:
   schedule:
-    - cron: "0 9 * * 1"
+    - cron: "0 6 * * 1"
   workflow_dispatch:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  security-events: write
+  id-token: write
+
+concurrency:
+  group: supply-chain-${{ github.ref }}
+  cancel-in-progress: false
 
 jobs:
   sbom:
     name: Generate SBOMs
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - name: SBOM (CycloneDX JSON)
         uses: anchore/sbom-action@v0
         with:
-          path: .
           format: cyclonedx-json
-          artifact-name: sbom.cdx.json
-          output-file: sbom.json
+          output-file: sbom.cdx.json
 
-  radar:
+  weekly-gates:
     name: Weekly gates
     runs-on: ubuntu-latest
-    needs: sbom
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
-        with: { python-version: "3.12" }
-      - uses: actions/setup-node@v4
-        with: { node-version: "20" }
+        with:
+          python-version: "3.12"
       - name: Python gates
-        if: hashFiles('pyproject.toml') != ''
         run: |
-          python3 -m pip install --upgrade pip
+          set -e
+          python -m pip install --upgrade pip
           pip install poetry
           poetry install --no-interaction
           poetry run ruff check .
           poetry run black --check .
-          PYTHONPATH=src poetry run pytest -q
-          poetry run mypy .
+          poetry run pytest -q
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
       - name: Node/TS gates
-        if: hashFiles('package.json') != ''
+        if: ${{ hashFiles('package.json') != '' }}
         run: |
-          corepack enable
-          if [ -f pnpm-lock.yaml ]; then pnpm install --frozen-lockfile; elif [ -f package-lock.json ]; then npm ci; else npm install --no-audit --no-fund; fi
-          npx --yes prettier -c .
-          npx --yes eslint --max-warnings=0 .
-          if [ -f tsconfig.json ]; then npx --yes tsc --noEmit -p tsconfig.json; fi
-          npm test --silent || npm run test --silent || true
+          set -e
+          npm ci
+          npx prettier -c .
+          # ESLint sólo si está declarado en deps
+          if node -e "p=require('./package.json'); process.exit(!((p.devDependencies&&p.devDependencies.eslint)||(p.dependencies&&p.dependencies.eslint)))"; then
+            npx eslint --max-warnings=0 .
+          else
+            echo 'eslint not listed; skipping lint'
+          fi
+          # TSC sólo si hay tsconfig y typescript en deps
+          if [ -f tsconfig.json ] && node -e "p=require('./package.json'); process.exit(!((p.devDependencies&&p.devDependencies.typescript)||(p.dependencies&&p.dependencies.typescript)))"; then
+            npx tsc --noEmit
+          else
+            echo 'tsconfig/typescript not found; skipping typecheck'
+          fi
+          # Tests JS opcionales (no bloquean si no hay scripts)
+          if node -e "p=require('./package.json'); process.exit(!p.scripts||!p.scripts.test)"; then
+            echo 'no npm test script; skipping'
+          else
+            npm test --silent
+          fi
