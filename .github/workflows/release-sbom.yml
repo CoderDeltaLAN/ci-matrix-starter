@@ -1,0 +1,25 @@
+name: release-sbom
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+
+jobs:
+  sbom:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Generate SBOM (CycloneDX JSON)
+        uses: anchore/sbom-action@v0
+        with:
+          path: .
+          format: cyclonedx-json
+          output-file: sbom-cyclonedx.json
+      - name: Attach SBOM to release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: sbom-cyclonedx.json
