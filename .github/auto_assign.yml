@@ -1,8 +1,4 @@
-# https://github.com/kentaro-m/auto-assign-action
+reviewers: []
+assignees: ["CoderDeltaLAN"]
 addReviewers: true
 addAssignees: author
-reviewers:
-  - CoderDeltaLAN
-numberOfReviewers: 1
-skipKeywords:
-  - WIP
