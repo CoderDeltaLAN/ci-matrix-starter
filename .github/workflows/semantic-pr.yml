@@ -1,12 +1,13 @@
 name: semantic-pr
 on:
   pull_request_target:
-    types: [opened, edited, synchronize, reopened, ready_for_review]
+    types: [opened, edited, synchronize, reopened, ready_for_review, labeled]
 permissions:
-  pull-requests: read
+  pull-requests: write
   statuses: write
 jobs:
   check:
+    if: ${{ github.event.pull_request.draft == false }}
     runs-on: ubuntu-latest
     steps:
       - uses: amannn/action-semantic-pull-request@v5
@@ -25,3 +26,9 @@ jobs:
             perf
             style
             revert
+          requireScope: false
+          subjectPattern: ".+"
+          ignoreLabels: |
+            skip-semantic
+            dependencies
+          wip: true
