@@ -1,0 +1,23 @@
+name: Dependabot auto-merge
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened, ready_for_review, labeled]
+permissions:
+  contents: write
+  pull-requests: write
+  actions: read
+jobs:
+  automerge:
+    if: github.actor == 'dependabot[bot]' && github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch metadata
+        id: meta
+        uses: dependabot/fetch-metadata@v2
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Enable auto-merge (squash)
+        uses: peter-evans/enable-pull-request-auto-merge@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          merge-method: squash
