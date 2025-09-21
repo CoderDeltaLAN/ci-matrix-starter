@@ -38,7 +38,7 @@ jobs:
         os: ${{ fromJson(inputs.os) }}
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Guard — skip if no Node project
         id: guard
