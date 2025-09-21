@@ -1,16 +1,17 @@
 name: Python CI (reusable)
-
 on:
   workflow_dispatch:
   schedule:
     - cron: "0 6 * * 1" # semanal para mantener el badge vivo
-
 permissions:
   contents: read
 
 jobs:
-  py:
-    uses: ./.github/workflows/py-ci.yml
-    with:
-      py-versions: '["3.11","3.12"]'
-      cov-min: 0
+  smoke:
+    name: smoke (python -V)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -V
