@@ -1,0 +1,9 @@
+name: release-sbom (badge)
+on:
+  workflow_dispatch:
+  schedule: [{ cron: "0 6 * * 1" }]
+jobs:
+  badge:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo ok

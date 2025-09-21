@@ -1,75 +1,47 @@
-# ⭐ ci-matrix-starter — Reusable CI Workflows (Python & TypeScript)
+# ⭐ **ci-matrix-starter — Reusable CI Workflows (Python & TypeScript)**
 
 A lean, production-ready **GitHub Actions starter** that ships **reusable CI workflows** for **Python (3.11/3.12)** and **TypeScript/Node 20**.
 Designed for **always-green CI** with strict local gates mirroring CI, **CodeQL** out of the box, optional **SBOM** generation, and guard-rails for safe merges.
 
-<!-- BADGES:FOOT:BEGIN -->
-<p align="center">
-  <sub><strong>Core status</strong></sub><br/>
-  <a href="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/build.yml">
-    <img alt="CI" src="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/build.yml/badge.svg?branch=main&amp;label=CI" />
-  </a>
-  <a href="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/codeql.yml">
-    <img alt="CodeQL Analyze" src="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/codeql.yml/badge.svg?branch=main&amp;label=CodeQL%20Analyze" />
-  </a>
-  <a href="https://github.com/CoderDeltaLAN/ci-matrix-starter/releases">
-    <img alt="Release" src="https://img.shields.io/github/v/release/CoderDeltaLAN/ci-matrix-starter?display_name=tag&amp;label=release" />
-  </a>
-  <img alt="Python 3.11 | 3.12" src="https://img.shields.io/badge/Python-3.11%20%7C%203.12-3776AB?logo=python" />
-  <a href="LICENSE">
-    <img alt="License MIT" src="https://img.shields.io/badge/License-MIT-blue.svg" />
-  </a>
-  <a href="https://www.paypal.com/donate/?hosted_button_id=YVENCBNCZWVPW">
-    <img alt="Donate" src="https://img.shields.io/badge/Donate-PayPal-0070ba?logo=paypal&amp;logoColor=white" />
-  </a>
-  <br/><br/>
+<div align="center">
 
-<sub><strong>CI &amp; automation</strong></sub><br/>
-<a href="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/py-ci-badge.yml">
-<img alt="Python CI (reusable)" src="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/py-ci-badge.yml/badge.svg?branch=main&amp;label=Python%20CI%20(reusable)" />
-</a>
-<a href="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/ts-ci-badge.yml">
-<img alt="TS CI (reusable)" src="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/ts-ci-badge.yml/badge.svg?branch=main&amp;label=TS%20CI" />
-</a>
-<a href="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/auto-assign-badge.yml">
-<img alt="auto-assign" src="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/auto-assign-badge.yml/badge.svg?branch=main&amp;label=auto-assign" />
-</a>
-<a href="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/pr-labeler-badge.yml">
-<img alt="pr-labeler" src="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/pr-labeler-badge.yml/badge.svg?branch=main&amp;label=pr-labeler" />
-</a>
+**Core status**
+[![Build](https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/build.yml)
+[![CodeQL](https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/codeql.yml/badge.svg?branch=main)](https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/codeql.yml)
+[![Release](https://img.shields.io/github/v/release/CoderDeltaLAN/ci-matrix-starter?display_name=tag)](https://github.com/CoderDeltaLAN/ci-matrix-starter/releases)
+![Python 3.11|3.12](https://img.shields.io/badge/Python-3.11%20|%203.12-3776AB?logo=python)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Donate](https://img.shields.io/badge/Donate-PayPal-0070ba?logo=paypal&logoColor=white)](https://www.paypal.com/donate/?hosted_button_id=YVENCBNCZWVPW)
+
 <br/><br/>
 
-<sub><strong>Security &amp; supply-chain</strong></sub><br/>
-<a href="https://securityscorecards.dev/viewer/?uri=github.com/CoderDeltaLAN/ci-matrix-starter">
-<img alt="OpenSSF Scorecard" src="https://api.securityscorecards.dev/projects/github.com/CoderDeltaLAN/ci-matrix-starter/badge" />
-</a>
-<a href="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/supply-chain.yml">
-<img alt="Supply chain" src="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/supply-chain.yml/badge.svg?branch=main&amp;label=Supply%20chain" />
-</a>
-<a href="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/dependabot-automerge-badge.yml">
-<img alt="Dependabot auto-merge" src="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/dependabot-automerge-badge.yml/badge.svg?branch=main&amp;label=Dependabot%20auto-merge" />
-</a>
-<a href="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/ghcr-publish-badge.yml">
-<img alt="Publish container to GHCR" src="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/ghcr-publish-badge.yml/badge.svg?branch=main&amp;label=Publish%20container%20to%20GHCR" />
-</a>
+**CI & automation**
+[![Python CI (reusable)](https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/py-ci-badge.yml/badge.svg?branch=main)](https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/py-ci-badge.yml)
+[![TS CI (reusable)](https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/ts-ci-badge.yml/badge.svg?branch=main)](https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/ts-ci-badge.yml)
+[![auto-assign](https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/auto-assign-badge.yml/badge.svg?branch=main)](https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/auto-assign-badge.yml)
+[![pr-labeler](https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/pr-labeler-badge.yml/badge.svg?branch=main)](https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/pr-labeler-badge.yml)
+
 <br/><br/>
 
-<sub><strong>Releases &amp; packaging</strong></sub><br/>
-<a href="https://pypi.org/project/ci-matrix-starter/">
-<img alt="PyPI" src="https://img.shields.io/pypi/v/ci-matrix-starter?logo=pypi&amp;label=PyPI" />
-</a>
-<a href="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/release-sbom-badge.yml">
-<img alt="release-sbom" src="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/release-sbom-badge.yml/badge.svg?branch=main&amp;label=release-sbom" />
-</a>
-<img alt="PyPI pyversions" src="https://img.shields.io/pypi/pyversions/ci-matrix-starter?logo=python&amp;label=PyPI%20pyversions" />
-<img alt="Wheel" src="https://img.shields.io/pypi/wheel/ci-matrix-starter?label=Wheel" />
+**Security & supply-chain**
+[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/CoderDeltaLAN/ci-matrix-starter/badge)](https://securityscorecards.dev/viewer/?uri=github.com/CoderDeltaLAN/ci-matrix-starter)
+[![supply-chain](https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/supply-chain.yml/badge.svg?branch=main)](https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/supply-chain.yml)
+[![Dependabot auto-merge](https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/dependabot-automerge-badge.yml/badge.svg?branch=main)](https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/dependabot-automerge-badge.yml)
+[![Publish container to GHCR](https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/ghcr-publish-badge.yml/badge.svg?branch=main)](https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/ghcr-publish-badge.yml)
 
-</p>
-<!-- BADGES:FOOT:END -->
+<br/><br/>
+
+**Releases & packaging**
+[![PyPI](https://img.shields.io/pypi/v/ci-matrix-starter?logo=pypi)](https://pypi.org/project/ci-matrix-starter/)
+[![release-sbom](https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/release-sbom-badge.yml/badge.svg?branch=main)](https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/release-sbom-badge.yml)
+![PyPI pyversions](https://img.shields.io/pypi/pyversions/ci-matrix-starter?logo=python)
+![Wheel](https://img.shields.io/pypi/wheel/ci-matrix-starter)
+
+</div>
 
 ---
 
-## Repo layout
+## **Repo layout**
 
 ```text
 .
@@ -100,7 +72,7 @@ Designed for **always-green CI** with strict local gates mirroring CI, **CodeQL*
 
 ---
 
-## 🖥️ Operating System Compatibility ✅
+## 🖥️ **Operating System Compatibility** ✅
 
 ```text
 | OS               | Status |
@@ -115,9 +87,9 @@ Designed for **always-green CI** with strict local gates mirroring CI, **CodeQL*
 
 ---
 
-## 🚀 Quick Start (consumers)
+## 🚀 **Quick Start (consumers)**
 
-### Use the reusable workflows in _your_ repo
+### **Use the reusable workflows in _your_ repo**
 
 Create `.github/workflows/ci.yml`:
 
@@ -143,7 +115,7 @@ jobs:
 
 > The **aggregator** in this repo (`build.yml`) shows how to orchestrate multiple reusable jobs.
 
-### Local mirror (same gates as CI)
+### **Local mirror (same gates as CI)**
 
 **Node / TS**
 
@@ -168,7 +140,7 @@ poetry run mypy src
 
 ---
 
-## 📦 What the workflows expect
+## 📦 **What the workflows expect**
 
 **TypeScript**
 
@@ -189,18 +161,18 @@ poetry run mypy src
 
 ---
 
-## ⛳ Required checks (CI gating)
+## ⛳ **Required checks (CI gating)**
 
-Suggested branch-protection contexts:
+**Suggested branch-protection contexts:**
 
 - `CI / build` (aggregator success)
 - `CodeQL Analyze / codeql`
 
-Enable linear history, dismiss stale reviews on new pushes, and auto-merge when green.
+**Enable linear history, dismiss stale reviews on new pushes, and auto-merge when green.**
 
 ---
 
-## 🧪 Local Developer Workflow (mirrors CI)
+## 🧪 **Local Developer Workflow (mirrors CI)**
 
 ```bash
 # Node
@@ -218,24 +190,24 @@ poetry run mypy src
 
 <!-- SCREENSHOT:BEGIN -->
 
-### Local sanity (screenshot)
+### 👨‍💻 **Local sanity (screenshot)**
 
 <p align="center">
   <img src="docs/screens/local-sanity.png"
        alt="Local sanity (pre-commit, linters and smoke tests passing)"
-       width="100%" style="max-width:900px" />
+       width="100%" />
 </p>
 <!-- SCREENSHOT:END -->
 
 ---
 
-## 🔧 CI (GitHub Actions)
+## 🔧 **CI (GitHub Actions)**
 
 - Reusable jobs for **Python** and **TypeScript**; call them via `uses:` with a tag (e.g., `@v0.1.7`).
 - Built-in **CodeQL** example.
 - Strict, fast feedback suitable for PR auto-merge when green.
 
-Python snippet:
+**Python snippet**
 
 ```yaml
 - run: python -m pip install --upgrade pip
@@ -249,7 +221,7 @@ Python snippet:
 - run: poetry run mypy src
 ```
 
-TypeScript snippet:
+**TypeScript snippet**
 
 ```yaml
 - run: npx prettier --check .
@@ -260,7 +232,7 @@ TypeScript snippet:
 
 ---
 
-## 🗺 When to Use This Project
+## 🗺 **When to Use This Project**
 
 - You need **ready-to-use CI** for **Python + TypeScript** with clean defaults.
 - You want **reusable workflows** referenced by tag.
@@ -268,7 +240,7 @@ TypeScript snippet:
 
 ---
 
-## 🧩 Customization
+## 🧩 **Customization**
 
 - Pin a release tag, e.g., `@v0.1.7`.
 - Adjust Python matrix: `with.python_versions`.
@@ -278,7 +250,7 @@ TypeScript snippet:
 
 ---
 
-## 🔒 Security
+## 🔒 **Security**
 
 - Code scanning via **CodeQL**.
 - Recommend enabling: **required conversations resolved**, **dismiss stale reviews**, **signed commits**, and **squash merges**.
@@ -286,7 +258,7 @@ TypeScript snippet:
 
 ---
 
-## 🙌 Contributing
+## 🙌 **Contributing**
 
 - Small, atomic PRs using **Conventional Commits**.
 - Keep local & CI gates green before review.
@@ -294,26 +266,31 @@ TypeScript snippet:
 
 ---
 
-## 💚 Donations & Sponsorship
+## 💚 **Donations & Sponsorship**
 
-Support open-source: your donations keep projects clean, secure, and evolving for the global community.
-[![Donate](https://img.shields.io/badge/Donate-PayPal-0070ba?logo=paypal&logoColor=white)](https://www.paypal.com/donate/?hosted_button_id=YVENCBNCZWVPW)
+**Support open-source: your donations keep projects clean, secure, and evolving for the global community.**
+
+<p align="left">
+  <a href="https://www.paypal.com/donate/?hosted_button_id=YVENCBNCZWVPW">
+    <img alt="Donate with PayPal" src="https://img.shields.io/badge/Donate-PayPal-0070ba?logo=paypal&logoColor=white" />
+  </a>
+</p>
 
 ---
 
-## 🔎 SEO Keywords
+## 🔎 **SEO Keywords**
 
 reusable github actions workflows, python typescript ci starter, node 20 eslint 9 prettier 3, ruff black mypy pytest, cyclonedx sbom cosign signing, codeql security analysis, branch protection auto merge, always green ci, monorepo friendly ci, strict local gates mirror
 
 ---
 
-## 👤 Author
+## 👤 **Author**
 
 **CoderDeltaLAN (Yosvel)**
 GitHub: https://github.com/CoderDeltaLAN
 
 ---
 
-## 📄 License
+## 📄 **License**
 
 Released under the **MIT License**. See [LICENSE](LICENSE).
