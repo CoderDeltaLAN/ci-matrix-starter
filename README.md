@@ -3,92 +3,69 @@
 A lean, production-ready **GitHub Actions starter** that ships **reusable CI workflows** for **Python (3.11/3.12)** and **TypeScript/Node 20**.
 Designed for **always-green CI** with strict local gates mirroring CI, **CodeQL** out of the box, optional **SBOM** generation, and guard-rails for safe merges.
 
-<!-- BADGES:CENTERED:BEGIN -->
-
-<!-- 1) Core status (fila corta arriba) -->
-<p align="center"><sub><strong>Core status</strong></sub></p>
+<!-- BADGES:FOOT:BEGIN -->
 <p align="center">
-  <a href="https://securityscorecards.dev/viewer/?uri=github.com/CoderDeltaLAN/ci-matrix-starter">
-    <img alt="OpenSSF Scorecard" src="https://api.securityscorecards.dev/projects/github.com/CoderDeltaLAN/ci-matrix-starter/badge" />
-  </a>
-  <a href="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/supply-chain.yml">
-    <img alt="supply-chain" src="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/supply-chain.yml/badge.svg?branch=main&label=supply-chain" />
-  </a>
-  <a href="https://pypi.org/project/ci-matrix-starter/">
-    <img alt="PyPI" src="https://img.shields.io/pypi/v/ci-matrix-starter?logo=pypi&label=PyPI" />
-  </a>
-  <a href="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/py-ci-badge.yml">
-    <img alt="Python CI (reusable)" src="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/py-ci-badge.yml/badge.svg?branch=main&label=Python%20CI%20(reusable)" />
-  </a>
-</p>
-
-<!-- 2) CI & automation -->
-<p align="center"><sub><strong>CI & automation</strong></sub></p>
-<p align="center">
+  <sub><strong>Core status</strong></sub><br/>
   <a href="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/build.yml">
-    <img alt="CI / build" src="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/build.yml/badge.svg?branch=main&label=CI" />
+    <img alt="CI" src="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/build.yml/badge.svg?branch=main&amp;label=CI" />
   </a>
-  <a href="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/ts-ci.yml">
-    <img alt="TS CI (reusable)" src="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/ts-ci.yml/badge.svg?branch=main&label=TS%20CI%20(reusable)" />
-  </a>
-  <a href="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/auto-assign.yml">
-    <img alt="auto-assign" src="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/auto-assign.yml/badge.svg?branch=main&label=auto-assign" />
-  </a>
-  <a href="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/labeler.yml">
-    <img alt="pr-labeler" src="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/labeler.yml/badge.svg?branch=main&label=pr-labeler" />
-  </a>
-</p>
-
-<!-- 3) Security & supply-chain -->
-<p align="center"><sub><strong>Security &amp; supply-chain</strong></sub></p>
-<p align="center">
   <a href="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/codeql.yml">
-    <img alt="CodeQL Analyze" src="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/codeql.yml/badge.svg?branch=main&label=CodeQL%20Analyze" />
+    <img alt="CodeQL Analyze" src="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/codeql.yml/badge.svg?branch=main&amp;label=CodeQL%20Analyze" />
   </a>
-  <a href="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/release-sbom.yml">
-    <img alt="SBOM" src="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/release-sbom.yml/badge.svg?branch=main&label=SBOM" />
-  </a>
-  <a href="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/dependabot-automerge.yml">
-    <img alt="Dependabot auto-merge" src="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/dependabot-automerge.yml/badge.svg?branch=main&label=Dependabot%20auto-merge" />
-  </a>
-  <a href="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/ghcr-publish.yml">
-    <img alt="GHCR publish" src="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/ghcr-publish.yml/badge.svg?branch=main&label=GHCR" />
-  </a>
-</p>
-
-<!-- 4) Releases & packaging -->
-<p align="center"><sub><strong>Releases &amp; packaging</strong></sub></p>
-<p align="center">
   <a href="https://github.com/CoderDeltaLAN/ci-matrix-starter/releases">
-    <img alt="release" src="https://img.shields.io/github/v/release/CoderDeltaLAN/ci-matrix-starter?display_name=tag" />
+    <img alt="Release" src="https://img.shields.io/github/v/release/CoderDeltaLAN/ci-matrix-starter?display_name=tag&amp;label=release" />
   </a>
-  <a href="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/publish-pypi.yml">
-    <img alt="Publish PyPI" src="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/publish-pypi.yml/badge.svg?branch=main&label=Publish%20PyPI" />
-  </a>
-  <a href="https://pypi.org/project/ci-matrix-starter/">
-    <img alt="PyPI - Python versions" src="https://img.shields.io/pypi/pyversions/ci-matrix-starter?label=PyPI%20pyversions" />
-  </a>
-  <a href="https://pypi.org/project/ci-matrix-starter/">
-    <img alt="PyPI - Wheel" src="https://img.shields.io/pypi/wheel/ci-matrix-starter?label=Wheel" />
-  </a>
-</p>
-
-<!-- 5) Meta -->
-<p align="center"><sub><strong>Meta</strong></sub></p>
-<p align="center">
   <img alt="Python 3.11 | 3.12" src="https://img.shields.io/badge/Python-3.11%20%7C%203.12-3776AB?logo=python" />
   <a href="LICENSE">
     <img alt="License MIT" src="https://img.shields.io/badge/License-MIT-blue.svg" />
   </a>
   <a href="https://www.paypal.com/donate/?hosted_button_id=YVENCBNCZWVPW">
-    <img alt="Donate" src="https://img.shields.io/badge/Donate-PayPal-0070ba?logo=paypal&logoColor=white" />
+    <img alt="Donate" src="https://img.shields.io/badge/Donate-PayPal-0070ba?logo=paypal&amp;logoColor=white" />
   </a>
-  <a href="https://www.conventionalcommits.org/en/v1.0.0/">
-    <img alt="Conventional Commits" src="https://img.shields.io/badge/Conventional%20Commits-1.0.0-ffa500" />
-  </a>
-</p>
+  <br/><br/>
 
-<!-- BADGES:CENTERED:END -->
+<sub><strong>CI &amp; automation</strong></sub><br/>
+<a href="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/py-ci-badge.yml">
+<img alt="Python CI (reusable)" src="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/py-ci-badge.yml/badge.svg?branch=main&amp;label=Python%20CI%20(reusable)" />
+</a>
+<a href="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/ts-ci-badge.yml">
+<img alt="TS CI (reusable)" src="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/ts-ci-badge.yml/badge.svg?branch=main&amp;label=TS%20CI" />
+</a>
+<a href="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/auto-assign-badge.yml">
+<img alt="auto-assign" src="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/auto-assign-badge.yml/badge.svg?branch=main&amp;label=auto-assign" />
+</a>
+<a href="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/pr-labeler-badge.yml">
+<img alt="pr-labeler" src="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/pr-labeler-badge.yml/badge.svg?branch=main&amp;label=pr-labeler" />
+</a>
+<br/><br/>
+
+<sub><strong>Security &amp; supply-chain</strong></sub><br/>
+<a href="https://securityscorecards.dev/viewer/?uri=github.com/CoderDeltaLAN/ci-matrix-starter">
+<img alt="OpenSSF Scorecard" src="https://api.securityscorecards.dev/projects/github.com/CoderDeltaLAN/ci-matrix-starter/badge" />
+</a>
+<a href="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/supply-chain.yml">
+<img alt="Supply chain" src="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/supply-chain.yml/badge.svg?branch=main&amp;label=Supply%20chain" />
+</a>
+<a href="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/dependabot-automerge-badge.yml">
+<img alt="Dependabot auto-merge" src="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/dependabot-automerge-badge.yml/badge.svg?branch=main&amp;label=Dependabot%20auto-merge" />
+</a>
+<a href="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/ghcr-publish-badge.yml">
+<img alt="Publish container to GHCR" src="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/ghcr-publish-badge.yml/badge.svg?branch=main&amp;label=Publish%20container%20to%20GHCR" />
+</a>
+<br/><br/>
+
+<sub><strong>Releases &amp; packaging</strong></sub><br/>
+<a href="https://pypi.org/project/ci-matrix-starter/">
+<img alt="PyPI" src="https://img.shields.io/pypi/v/ci-matrix-starter?logo=pypi&amp;label=PyPI" />
+</a>
+<a href="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/release-sbom-badge.yml">
+<img alt="release-sbom" src="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/release-sbom-badge.yml/badge.svg?branch=main&amp;label=release-sbom" />
+</a>
+<img alt="PyPI pyversions" src="https://img.shields.io/pypi/pyversions/ci-matrix-starter?logo=python&amp;label=PyPI%20pyversions" />
+<img alt="Wheel" src="https://img.shields.io/pypi/wheel/ci-matrix-starter?label=Wheel" />
+
+</p>
+<!-- BADGES:FOOT:END -->
 
 ---
 
@@ -97,16 +74,43 @@ Designed for **always-green CI** with strict local gates mirroring CI, **CodeQL*
 ```text
 .
 ├── .github/workflows/
-│   ├── build.yml                 # Aggregator: calls reusable jobs (TS & Py)
-│   ├── ts-ci.yml                 # Reusable TypeScript/Node CI
-│   └── py-ci.yml                 # Reusable Python CI
+│   ├── build.yml                     # aggregator (example)
+│   ├── codeql.yml                    # CodeQL analysis
+│   ├── supply-chain.yml              # SBOM + weekly gates
+│   ├── release-sbom.yml              # release SBOM publish
+│   ├── ghcr-publish.yml              # container to GHCR (example)
+│   ├── release-drafter.yml           # release notes draft
+│   ├── auto-assign.yml               # auto-assign reviewers
+│   ├── labeler.yml                   # PR labeler
+│   ├── dependabot-automerge.yml      # auto-merge Dependabot
+│   ├── ts-ci.yml                     # reusable TypeScript/Node CI
+│   ├── py-ci.yml                     # reusable Python CI
+│   └── py-ci-badge.yml               # wrapper for README badge
+├── docs/
+│   └── screens/
+│       └── local-sanity.png          # terminal screenshot (example)
 ├── src/
-│   ├── index.ts                  # minimal TS sanity (example)
-│   └── ci_matrix_starter/        # minimal Py package (example)
-├── tests/                        # Python tests (example)
-├── package.json                  # Node project (example scripts)
-├── pyproject.toml                # Python tooling (ruff/black/pytest/mypy)
+│   ├── index.ts                      # minimal TS example
+│   └── ci_matrix_starter/            # minimal Py package
+├── tests/                            # Python tests (example)
+├── package.json                      # Node scripts
+├── pyproject.toml                    # Python tooling
 └── README.md
+```
+
+---
+
+## 🖥️ Operating System Compatibility ✅
+
+```text
+| OS               | Status |
+|------------------|:------:|
+| Linux            |   ✅   |
+| macOS            |   ✅   |
+| Windows (WSL2)   |   ✅   |
+| FreeBSD          |   ✅   |
+| Android (Termux) |   ✅   |
+| Containers (CI)  |   ✅   |
 ```
 
 ---
@@ -129,8 +133,8 @@ jobs:
   py:
     uses: CoderDeltaLAN/ci-matrix-starter/.github/workflows/py-ci.yml@v0.1.7
     with:
-      py-versions: '["3.11","3.12"]'
-      cov-min: 100
+      python_versions: '["3.11","3.12"]'
+      run_tests: true
 
   # TypeScript / Node 20
   ts:
@@ -177,7 +181,7 @@ poetry run mypy src
 
 - `pyproject.toml` with dev tools (**ruff**, **black**, **pytest**, **mypy**, **poetry**).
 - Tests under `tests/`; coverage threshold via `cov-min`.
-- Matrix **3.11/3.12** (customizable with `py-versions`).
+  Matrix **3.11/3.12** (customizable with `python_versions`).
 
 **Optional SBOM & signing**
 
@@ -209,6 +213,19 @@ poetry run ruff check . && poetry run black --check .
 PYTHONPATH=src poetry run pytest -q --cov=src --cov-fail-under=100
 poetry run mypy src
 ```
+
+---
+
+<!-- SCREENSHOT:BEGIN -->
+
+### Local sanity (screenshot)
+
+<p align="center">
+  <img src="docs/screens/local-sanity.png"
+       alt="Local sanity (pre-commit, linters and smoke tests passing)"
+       width="100%" style="max-width:900px" />
+</p>
+<!-- SCREENSHOT:END -->
 
 ---
 
@@ -254,8 +271,8 @@ TypeScript snippet:
 ## 🧩 Customization
 
 - Pin a release tag, e.g., `@v0.1.7`.
-- Adjust Python matrix: `with.py-versions`.
-- Tune coverage: `with.cov-min`.
+- Adjust Python matrix: `with.python_versions`.
+- Toggle tests in the wrapper: `with.run_tests` (true/false).
 - Provide secrets to enable optional **cosign** signing.
 - Extend jobs by adding steps after `uses:`.
 
@@ -279,7 +296,7 @@ TypeScript snippet:
 
 ## 💚 Donations & Sponsorship
 
-If this project saves you time, consider supporting ongoing maintenance. Thank you!
+Support open-source: your donations keep projects clean, secure, and evolving for the global community.
 [![Donate](https://img.shields.io/badge/Donate-PayPal-0070ba?logo=paypal&logoColor=white)](https://www.paypal.com/donate/?hosted_button_id=YVENCBNCZWVPW)
 
 ---
