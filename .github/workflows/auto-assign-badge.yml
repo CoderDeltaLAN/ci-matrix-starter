@@ -1,10 +1,8 @@
 name: auto-assign (badge)
 on:
   workflow_dispatch:
-  schedule:
-    - cron: "0 5 * * 1"
-permissions:
-  contents: read
+  schedule: [{ cron: "0 5 * * 1" }]
+permissions: { contents: read }
 jobs:
   badge:
     runs-on: ubuntu-latest
