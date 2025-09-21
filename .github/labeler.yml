@@ -1,0 +1,13 @@
+docs:
+  - changed-files:
+      - any-glob-to-any-file: ["**/*.md", "docs/**", "README.md"]
+ci:
+  - changed-files:
+      - any-glob-to-any-file: [".github/workflows/**", "scripts/**/*.sh"]
+python:
+  - changed-files:
+      - any-glob-to-any-file: ["pyproject.toml", "**/*.py", "tests/**/*.py"]
+typescript:
+  - changed-files:
+      - any-glob-to-any-file:
+          ["src/**/*.ts", "tsconfig.json", "eslint.config.mjs", "package.json"]

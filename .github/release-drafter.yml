@@ -1,0 +1,16 @@
+name-template: "v$NEXT_PATCH_VERSION"
+tag-template: "v$NEXT_PATCH_VERSION"
+categories:
+  - title: "Features"
+    labels: ["feature", "feat"]
+  - title: "Fixes"
+    labels: ["fix", "bug"]
+  - title: "Chores"
+    labels: ["chore", "ci", "docs"]
+  - title: "Security"
+    labels: ["security"]
+change-template: "- $TITLE (#$NUMBER) by @$AUTHOR"
+no-changes-template: "No user-facing changes."
+template: |
+  ## What’s Changed
+  $CHANGES

@@ -8,3 +8,6 @@ node_modules/
 .pytest_cache/
 sbom-*.json
 .tools/
+pnpm-lock.yaml
+_ci_local/
+_ci_redfix/
