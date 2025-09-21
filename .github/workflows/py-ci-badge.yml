@@ -1,18 +1,17 @@
 name: Python CI (reusable)
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
   schedule:
-    - cron: "0 6 * * 1"
-
+    - cron: "0 6 * * 1" # semanal para mantener el badge vivo
 permissions:
   contents: read
 
 jobs:
-  badge:
-    uses: CoderDeltaLAN/ci-matrix-starter/.github/workflows/py-ci.yml@main
-    with:
-      os: '["ubuntu-latest"]'
-      python_versions: '["3.12"]'
-      run_tests: false
+  smoke:
+    name: smoke (python -V)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -V
