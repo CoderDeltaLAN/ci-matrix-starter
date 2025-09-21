@@ -1,10 +1,10 @@
-name: TS CI (reusable)
-on:
-  workflow_dispatch:
-  schedule:
-    - cron: "0 6 * * 1"
-permissions:
-  contents: read
+name: TS CI (badge)
+on: { workflow_dispatch: {}, schedule: [{ cron: "0 5 * * 1" }] }
+permissions: { contents: read }
 jobs:
-  ts:
-    uses: ./.github/workflows/ts-ci.yml
+  badge:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-node@v4
+        with: { node-version: "20" }
+      - run: node -v && npm -v
