@@ -1,15 +1,23 @@
 name: Python CI (reusable)
+
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 6 * * 1" # opcional: semanal para mantener el badge vivo
+    - cron: "0 5 * * 1" # semanal
+
 permissions:
   contents: read
 
+concurrency:
+  group: py-ci-badge-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  py:
+  badge:
+    name: Python CI (reusable)
     uses: ./.github/workflows/py-ci.yml
     with:
-      os: ubuntu-latest
-      python_versions: '["3.11","3.12"]'
-      run_tests: false # solo smoke para el badge (sin tests)
+      os: '["ubuntu-latest"]'
+      python_versions: '["3.12"]'
+      run_tests: false
+    secrets: inherit
