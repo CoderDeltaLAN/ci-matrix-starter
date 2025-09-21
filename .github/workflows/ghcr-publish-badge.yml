@@ -1,7 +1,5 @@
 name: Publish container to GHCR (badge)
-on:
-  workflow_dispatch:
-  schedule: [{ cron: "0 5 * * 1" }]
+on: { workflow_dispatch: {}, schedule: [{ cron: "0 5 * * 1" }] }
 permissions: { contents: read }
 jobs:
   badge:
