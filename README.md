@@ -4,12 +4,12 @@ A lean, production-ready **GitHub Actions starter** that ships **reusable CI wor
 Designed for **always-green CI** with strict local gates mirroring CI, **CodeQL** out of the box, optional **SBOM** generation, and guard-rails for safe merges.
 
 <!-- BADGES:FOOT:BEGIN -->
-<p align="center"><sub><b>Core status</b></sub><br/>
+<p align="center"><sub><b>**Core status**</b></sub><br/>
   <a href="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/build.yml">
-    <img alt="CI" src="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/build.yml/badge.svg?branch=main&label=CI" />
+    <img alt="CI" src="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/build.yml/badge.svg?branch=main&label=CI&v=2" />
   </a>
   <a href="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/codeql.yml">
-    <img alt="CodeQL Analyze" src="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/codeql.yml/badge.svg?branch=main&label=CodeQL" />
+    <img alt="CodeQL" src="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/codeql.yml/badge.svg?branch=main&label=CodeQL&v=2" />
   </a>
   <a href="https://github.com/CoderDeltaLAN/ci-matrix-starter/releases">
     <img alt="release" src="https://img.shields.io/github/v/release/CoderDeltaLAN/ci-matrix-starter?display_name=tag&label=release" />
@@ -20,44 +20,44 @@ Designed for **always-green CI** with strict local gates mirroring CI, **CodeQL*
   </a>
 </p>
 
-<p align="center"><sub><b>CI & automation</b></sub><br/>
+<p align="center"><sub><b>**CI & automation**</b></sub><br/>
   <a href="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/py-ci-badge.yml">
-    <img alt="Python CI (reusable)" src="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/py-ci-badge.yml/badge.svg?branch=main&label=Python%20CI" />
+    <img alt="Python CI" src="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/py-ci-badge.yml/badge.svg?branch=main&label=Python%20CI&v=2" />
   </a>
-  <a href="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/ts-ci.yml">
-    <img alt="TS CI (reusable)" src="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/ts-ci.yml/badge.svg?branch=main&label=TS%20CI" />
+  <a href="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/ts-ci-badge.yml">
+    <img alt="TS CI" src="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/ts-ci-badge.yml/badge.svg?branch=main&label=TS%20CI&v=2" />
   </a>
-  <a href="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/auto-assign.yml">
-    <img alt="auto-assign" src="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/auto-assign.yml/badge.svg?branch=main&label=auto-assign" />
+  <a href="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/auto-assign-badge.yml">
+    <img alt="auto-assign" src="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/auto-assign-badge.yml/badge.svg?branch=main&label=auto-assign&v=2" />
   </a>
-  <a href="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/labeler.yml">
-    <img alt="pr-labeler" src="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/labeler.yml/badge.svg?branch=main&label=pr-labeler" />
+  <a href="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/pr-labeler-badge.yml">
+    <img alt="pr-labeler" src="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/pr-labeler-badge.yml/badge.svg?branch=main&label=pr-labeler&v=2" />
   </a>
 </p>
 
-<p align="center"><sub><b>Security &amp; supply-chain</b></sub><br/>
+<p align="center"><sub><b>**Security &amp; supply-chain**</b></sub><br/>
   <a href="https://securityscorecards.dev/viewer/?uri=github.com/CoderDeltaLAN/ci-matrix-starter">
     <img alt="OpenSSF Scorecard" src="https://api.securityscorecards.dev/projects/github.com/CoderDeltaLAN/ci-matrix-starter/badge" />
   </a>
   <a href="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/supply-chain.yml">
-    <img alt="supply-chain" src="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/supply-chain.yml/badge.svg?branch=main&label=supply-chain" />
+    <img alt="supply-chain" src="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/supply-chain.yml/badge.svg?branch=main&label=supply-chain&v=2" />
   </a>
-  <a href="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/dependabot-automerge.yml">
-    <img alt="Dependabot auto-merge" src="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/dependabot-automerge.yml/badge.svg?branch=main&label=Dependabot%20auto-merge" />
+  <a href="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/dependabot-automerge-badge.yml">
+    <img alt="Dependabot auto-merge" src="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/dependabot-automerge-badge.yml/badge.svg?branch=main&label=Dependabot%20auto-merge&v=2" />
   </a>
-  <a href="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/ghcr-publish.yml">
-    <img alt="Publish container to GHCR" src="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/ghcr-publish.yml/badge.svg?branch=main&label=GHCR%20publish" />
+  <a href="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/ghcr-publish-badge.yml">
+    <img alt="GHCR publish" src="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/ghcr-publish-badge.yml/badge.svg?branch=main&label=GHCR%20publish&v=2" />
   </a>
 </p>
 
-<p align="center"><sub><b>Releases &amp; packaging</b></sub><br/>
+<p align="center"><sub><b>**Releases &amp; packaging**</b></sub><br/>
   <a href="https://pypi.org/project/ci-matrix-starter/">
     <img alt="PyPI" src="https://img.shields.io/pypi/v/ci-matrix-starter?logo=pypi&label=PyPI" />
   </a>
-  <a href="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/release-sbom.yml">
-    <img alt="release-sbom" src="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/release-sbom.yml/badge.svg?branch=main&label=release-sbom" />
+  <a href="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/release-sbom-badge.yml">
+    <img alt="release-sbom" src="https://github.com/CoderDeltaLAN/ci-matrix-starter/actions/workflows/release-sbom-badge.yml/badge.svg?branch=main&label=release-sbom&v=2" />
   </a>
-  <img alt="PyPI pyversions" src="https://img.shields.io/pypi/pyversions/ci-matrix-starter?logo=python&label=pyversions" />
+  <img alt="pyversions" src="https://img.shields.io/pypi/pyversions/ci-matrix-starter?logo=python&label=pyversions" />
   <img alt="Wheel" src="https://img.shields.io/pypi/wheel/ci-matrix-starter?label=Wheel" />
 </p>
 <!-- BADGES:FOOT:END -->
