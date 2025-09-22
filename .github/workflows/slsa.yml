@@ -1,26 +1,37 @@
 name: SLSA provenance
 
 on:
-  push:
-    tags:
-      - "v*"
   release:
-    types:
-      - published
-  workflow_dispatch:
+    types: [published]
+  workflow_dispatch: {}
 
 permissions:
-  actions: read
   contents: write
   id-token: write
   attestations: write
 
-concurrency:
-  group: slsa-${{ github.ref }}
-  cancel-in-progress: true
-
 jobs:
-  provenance:
-    uses: slsa-framework/slsa-github-generator/.github/workflows/generator_generic_slsa3.yml@v2
-    with:
-      upload-assets: true
+  attest-release-assets:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
+      attestations: write
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event.release.tag_name || github.ref_name }}
+
+      # Descarga los assets del release (SBOM incluido)
+      - name: Download release assets
+        uses: robinraju/release-downloader@v1.10
+        with:
+          tag: ${{ github.event.release.tag_name || github.ref_name }}
+          fileName: "*"
+          out-file-path: assets
+
+      # Crea attestation SLSA (visible en pestaña "Attestations" del release)
+      - name: Attest SBOMs / assets
+        uses: actions/attest-build-provenance@v1
+        with:
+          subject-path: "assets/*"

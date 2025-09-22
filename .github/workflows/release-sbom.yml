@@ -1,25 +1,47 @@
 name: release-sbom
+
 on:
-  release:
-    types: [published]
+  push:
+    tags: ["v*"]
+  workflow_dispatch: {}
 
 permissions:
   contents: write
+  id-token: write
 
 jobs:
   sbom:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
     steps:
       - uses: actions/checkout@v5
+
+      - name: Install Cosign (keyless)
+        uses: sigstore/cosign-installer@v3.7.0
         with:
-          fetch-depth: 0
-      - name: Generate SBOM (CycloneDX JSON)
-        uses: anchore/sbom-action@c73dd3f93ab542b7902df62a6ee5ad763179fa7b
+          cosign-release: "v2.4.1"
+
+      - name: Generate SBOM (CycloneDX)
+        uses: anchore/sbom-action@v0.16.0
         with:
           path: .
           format: cyclonedx-json
           output-file: sbom-cyclonedx.json
-      - name: Attach SBOM to release
+
+      - name: Cosign sign SBOM (keyless)
+        env:
+          COSIGN_EXPERIMENTAL: "1"
+        run: |
+          cosign sign-blob --yes sbom-cyclonedx.json \
+            --output-certificate sbom-cyclonedx.json.cert \
+            --output-signature sbom-cyclonedx.json.sig
+
+      - name: Attach SBOM + sig + cert to release
         uses: softprops/action-gh-release@v2
         with:
-          files: sbom-cyclonedx.json
+          files: |
+            sbom-cyclonedx.json
+            sbom-cyclonedx.json.sig
+            sbom-cyclonedx.json.cert
