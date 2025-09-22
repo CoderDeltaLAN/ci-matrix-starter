@@ -20,6 +20,6 @@ jobs:
           format: cyclonedx-json
           output-file: sbom-cyclonedx.json
       - name: Attach SBOM to release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-releasecbd405e2c4e67a21c47fa9e383d020e4e28b836@v2
         with:
           files: sbom-cyclonedx.json
