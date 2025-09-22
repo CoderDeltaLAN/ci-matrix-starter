@@ -9,7 +9,7 @@ jobs:
   label:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/labeleredcd8ababfe52f92936142cc22ac488b1b@v6
+      - uses: actions/labeleredcd8ababfe52f92936142cc22a@c488b1b
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           sync-labels: true
