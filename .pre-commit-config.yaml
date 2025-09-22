@@ -28,3 +28,10 @@ repos:
         pass_filenames: false
         types_or:
           [javascript, jsx, ts, tsx, json, markdown, yaml, css, scss, html]
+  - repo: local
+    hooks:
+      - id: no-spanish
+        name: no Spanish content (warn)
+        entry: scripts/no_spanish.sh
+        language: system
+        pass_filenames: false
