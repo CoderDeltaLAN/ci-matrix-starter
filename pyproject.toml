@@ -4,7 +4,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "ci-matrix-starter"
-version = "0.1.0"
+version = "0.1.10"
 description = "Starter de CI matrix (Poetry + src layout)"
 authors = ["CoderDeltaLAN"]
 readme = "README.md"
