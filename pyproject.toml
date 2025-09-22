@@ -1,51 +1,42 @@
+[build-system]
+requires = ["poetry-core>=1.8.0"]
+build-backend = "poetry.core.masonry.api"
+
 [tool.poetry]
 name = "ci-matrix-starter"
-version = "0.1.7"
-description = "Reusable CI workflows for Py/TS with SBOM & signatures."
-authors = ["CoderDeltaLAN <coderdeltalan.cargo784@8alias.com>"]
+version = "0.1.0"
+description = "Starter de CI matrix (Poetry + src layout)"
+authors = ["CoderDeltaLAN"]
 readme = "README.md"
+license = "MIT"
 packages = [{ include = "ci_matrix_starter", from = "src" }]
 
 [tool.poetry.dependencies]
-python = "^3.11"
+python = ">=3.11,<4.0"
 
 [tool.poetry.group.dev.dependencies]
-pytest = "^8.3.0"
-<<<<<<< HEAD
-pytest-cov = "^5.0.0"
-ruff = ">=0.6,<0.14"
-black = "^24.10.0"
-||||||| 0e59d81
-pytest-cov = "^5.0.0"
-ruff = "^0.6.0"
-black = "^24.10.0"
-=======
-pytest-cov = ">=5,<8"
-ruff = "^0.6.0"
-black = ">=24.10,<26.0"
->>>>>>> origin/main
+black = "^24.8.0"
+ruff = "^0.5.6"
+pytest = "^8.3.2"
 mypy = "^1.11.0"
-types-setuptools = "*"
 
 [tool.black]
 line-length = 88
-extend-exclude = '''
+target-version = ["py311", "py312"]
+exclude = """
 (
-  ^node_modules/
-| ^\.venv/
-| ^dist/
+  /_ci_local
 )
-'''
+"""
 
 [tool.ruff]
 line-length = 88
-extend-exclude = ["node_modules", ".venv", "dist"]
+target-version = "py311"
+extend-exclude = ["_ci_local"]
 
-[tool.mypy]
-python_version = "3.11"
-strict = false
-packages = ["ci_matrix_starter"]
+[tool.ruff.lint]
+select = ["E","F","I","UP","B"]
 
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+[tool.pytest.ini_options]
+addopts = "-q"
+testpaths = ["tests"]
