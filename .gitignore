@@ -11,3 +11,7 @@ sbom-*.json
 pnpm-lock.yaml
 _ci_local/
 _ci_redfix/
+
+# local artifacts
+_ci_local/
+.tools/
