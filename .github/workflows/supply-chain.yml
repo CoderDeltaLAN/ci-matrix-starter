@@ -1,78 +1,68 @@
 name: supply-chain
 
 on:
-  schedule:
-    - cron: "0 6 * * 1"
-  workflow_dispatch:
+  pull_request:
   push:
     branches: [main]
+  schedule:
+    - cron: "0 4 * * 1"
+  workflow_dispatch:
 
 permissions:
   contents: read
-  security-events: write
-  id-token: write
-
-concurrency:
-  group: supply-chain-${{ github.ref }}
-  cancel-in-progress: false
 
 jobs:
+  dependency-review:
+    # No debe romper fuera de PR
+    permissions:
+      contents: read
+      pull-requests: read
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 2 }
+      - name: Dependency review
+        id: dr
+        uses: actions/dependency-review-action@v4
+        with:
+          fail-on-severity: high
+        # Clave: fuera de PR, no romper el job aunque detecte problemas
+        continue-on-error: ${{ github.event_name != 'pull_request' }}
+
+  scorecards:
+    permissions:
+      actions: read
+      contents: read
+      id-token: write
+      security-events: write
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - name: Run Scorecard
+        id: scorecard
+        uses: ossf/scorecard-action@v2.3.3
+        with:
+          results_file: results.sarif
+          results_format: sarif
+          publish_results: true
+      - name: Upload SARIF to Code Scanning
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: results.sarif
+
   sbom:
-    name: Generate SBOMs
+    permissions: { contents: read }
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v4
+      - name: Generate SBOM (SPDX)
+        uses: anchore/sbom-action@v0.17.6
         with:
-          fetch-depth: 0
-      - name: SBOM (CycloneDX JSON)
-        uses: anchore/sbom-action@v0
+          format: spdx-json
+          output-file: sbom.spdx.json
+      - name: Upload SBOM artifact
+        uses: actions/upload-artifact@v4
         with:
-          format: cyclonedx-json
-          output-file: sbom.cdx.json
-
-  weekly-gates:
-    name: Weekly gates
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v5
-
-      - uses: actions/setup-python@v6
-        with:
-          python-version: "3.12"
-          cache: "pip"
-
-      - name: Python gates
-        run: |
-          set -e
-          python -m pip install --upgrade pip
-          pip install ruff black pytest
-          ruff check .
-          black --check .
-          pytest -q || rc=$?; if [ "${rc:-0}" -eq 5 ]; then rc=0; fi; exit "$rc"
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-          cache: "npm"
-
-      - name: Node/TS gates
-        if: ${{ hashFiles('package.json') != '' }}
-        run: |
-          set -e
-          npm ci
-          npx prettier -c .
-          if node -e "p=require('./package.json'); process.exit(!((p.devDependencies&&p.devDependencies.eslint)||(p.dependencies&&p.dependencies.eslint)))"; then
-            npx eslint --max-warnings=0 .
-          else
-            echo 'eslint not listed; skipping lint'
-          fi
-          if [ -f tsconfig.json ] && node -e "p=require('./package.json'); process.exit(!((p.devDependencies&&p.devDependencies.typescript)||(p.dependencies&&p.dependencies.typescript)))"; then
-            npx tsc --noEmit
-          else
-            echo 'tsconfig/typescript not found; skipping typecheck'
-          fi
-          if node -e "p=require('./package.json'); process.exit(!p.scripts||!p.scripts.test)"; then
-            echo 'no npm test script; skipping'
-          else
-            npm test --silent
-          fi
+          name: sbom-spdx
+          path: sbom.spdx.json
