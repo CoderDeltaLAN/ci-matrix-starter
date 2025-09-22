@@ -1,15 +1,26 @@
 name: SLSA provenance
+
 on:
-  release: { types: [published] }
+  push:
+    tags:
+      - "v*"
+  release:
+    types:
+      - published
   workflow_dispatch:
+
 permissions:
+  actions: read
   contents: write
   id-token: write
+  attestations: write
+
+concurrency:
+  group: slsa-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   provenance:
-    uses: slsa-framework/slsa-github-generator/.github/workflows/generator_generic_slsa3.yml@v2.0.0
-    permissions:
-      contents: write
-      id-token: write
+    uses: slsa-framework/slsa-github-generator/.github/workflows/generator_generic_slsa3.yml@v2
     with:
-      base64-subjects: "${{ github.sha }}"
+      upload-assets: true
