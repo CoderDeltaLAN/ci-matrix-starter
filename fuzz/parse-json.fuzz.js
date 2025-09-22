@@ -1,3 +1,5 @@
+/* global module */
+/* eslint-env node */
 "use strict";
 
 module.exports.fuzz = (data) => {

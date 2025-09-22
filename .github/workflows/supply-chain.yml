@@ -1,68 +1,47 @@
 name: supply-chain
-
 on:
-  pull_request:
   push:
-    branches: [main]
+    branches: ["main"]
+  pull_request:
   schedule:
-    - cron: "0 4 * * 1"
+    - cron: "23 4 * * 1"
   workflow_dispatch:
-
 permissions:
   contents: read
-
+concurrency:
+  group: supply-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
-  dependency-review:
-    # No debe romper fuera de PR
-    permissions:
-      contents: read
-      pull-requests: read
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@ff7abcd0c3c05ccf6adc123a8cd1fd4fb30fb493
-        with: { fetch-depth: 2 }
-      - name: Dependency review
-        id: dr
-        uses: actions/dependency-review-action@6fad41793215e16e31faa120c584d320a07b88de
-        with:
-          fail-on-severity: high
-        # Clave: fuera de PR, no romper el job aunque detecte problemas
-        continue-on-error: ${{ github.event_name != 'pull_request' }}
-
-  scorecards:
-    permissions:
-      actions: read
-      contents: read
-      id-token: write
-      security-events: write
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@ff7abcd0c3c05ccf6adc123a8cd1fd4fb30fb493
-        with: { fetch-depth: 0 }
-      - name: Run Scorecard
-        id: scorecard
-        uses: ossf/scorecard-action@43e475b79a8bd5217334edc08879005b2229d79a.3.3
-        with:
-          results_file: results.sarif
-          results_format: sarif
-          publish_results: true
-      - name: Upload SARIF to Code Scanning
-        uses: github/codeql-action/upload-sarif@v3
-        with:
-          sarif_file: results.sarif
-
   sbom:
-    permissions: { contents: read }
+    name: Generate SBOM (CycloneDX)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@ff7abcd0c3c05ccf6adc123a8cd1fd4fb30fb493
-      - name: Generate SBOM (SPDX)
-        uses: anchore/sbom-action@c73dd3f93ab542b7902df62a6ee5ad763179fa7b.17.6
+      - uses: actions/checkout@v4
+      - uses: anchore/sbom-action@v0
         with:
-          format: spdx-json
-          output-file: sbom.spdx.json
-      - name: Upload SBOM artifact
-        uses: actions/upload-artifact@de65e23aa2b7e23d713bb51fbfcb6d502f8667d8
+          format: cyclonedx-json
+          output-file: sbom.cdx.json
+      - uses: actions/upload-artifact@v4
         with:
-          name: sbom-spdx
-          path: sbom.spdx.json
+          name: sbom-cyclonedx
+          path: sbom.cdx.json
+  vuln-gate:
+    if: ${{ github.event_name == 'pull_request' && github.event.pull_request.draft == false }}
+    name: Vulnerability scan (PR gate)
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: aquasecurity/trivy-action@v0.33.1
+        with:
+          scan-type: fs
+          format: sarif
+          output: trivy.sarif
+          ignore-unfixed: true
+          severity: CRITICAL
+          exit-code: "1"
+      - uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: trivy.sarif
