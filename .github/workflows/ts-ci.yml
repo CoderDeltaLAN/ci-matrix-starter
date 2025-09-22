@@ -52,7 +52,7 @@ jobs:
             echo "has_pkg=false" >> "$GITHUB_OUTPUT"
           fi
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@89d709d423dc495668cd762a18dd4a070611be3f
         if: ${{ steps.guard.outputs.has_pkg == 'true' }}
         with:
           node-version: ${{ matrix.node }}

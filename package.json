@@ -11,7 +11,8 @@
     "format": "prettier --write .",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "smoke": "node -e \"console.log('smoke ok')\"",
-    "audit": "npm audit --omit=dev"
+    "audit": "npm audit --omit=dev",
+    "fuzz": "jazzer fuzz fuzz/parse-json.fuzz.js --seed=seed"
   },
   "devDependencies": {
     "@eslint/js": "^9.0.0",
@@ -19,7 +20,8 @@
     "eslint": "^9.0.0",
     "prettier": "^3.0.0",
     "typescript": "^5.9.2",
-    "typescript-eslint": "^8.0.0"
+    "typescript-eslint": "^8.0.0",
+    "jazzer.js": "^1.0.0"
   },
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"

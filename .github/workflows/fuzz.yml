@@ -1,0 +1,17 @@
+name: Fuzz
+on:
+  pull_request:
+  schedule:
+    - cron: "0 4 * * 1"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  fuzz:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@ff7abcd0c3c05ccf6adc123a8cd1fd4fb30fb493
+      - uses: actions/setup-node@89d709d423dc495668cd762a18dd4a070611be3f
+        with: { node-version: "20" }
+      - run: npm ci
+      - run: npm run fuzz --if-present

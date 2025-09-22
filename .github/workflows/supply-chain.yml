@@ -19,11 +19,11 @@ jobs:
       pull-requests: read
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@ff7abcd0c3c05ccf6adc123a8cd1fd4fb30fb493
         with: { fetch-depth: 2 }
       - name: Dependency review
         id: dr
-        uses: actions/dependency-review-action@v4
+        uses: actions/dependency-review-action@6fad41793215e16e31faa120c584d320a07b88de
         with:
           fail-on-severity: high
         # Clave: fuera de PR, no romper el job aunque detecte problemas
@@ -37,11 +37,11 @@ jobs:
       security-events: write
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@ff7abcd0c3c05ccf6adc123a8cd1fd4fb30fb493
         with: { fetch-depth: 0 }
       - name: Run Scorecard
         id: scorecard
-        uses: ossf/scorecard-action@v2.3.3
+        uses: ossf/scorecard-action@43e475b79a8bd5217334edc08879005b2229d79a.3.3
         with:
           results_file: results.sarif
           results_format: sarif
@@ -55,14 +55,14 @@ jobs:
     permissions: { contents: read }
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@ff7abcd0c3c05ccf6adc123a8cd1fd4fb30fb493
       - name: Generate SBOM (SPDX)
-        uses: anchore/sbom-action@v0.17.6
+        uses: anchore/sbom-action@c73dd3f93ab542b7902df62a6ee5ad763179fa7b.17.6
         with:
           format: spdx-json
           output-file: sbom.spdx.json
       - name: Upload SBOM artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@de65e23aa2b7e23d713bb51fbfcb6d502f8667d8
         with:
           name: sbom-spdx
           path: sbom.spdx.json

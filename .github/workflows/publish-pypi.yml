@@ -17,7 +17,7 @@ jobs:
         with:
           fetch-depth: 0
           fetch-tags: true
-      - uses: actions/setup-python@v6
+      - uses: actions/setup-python@4267e283df95c05d9f16ece6624106f44613b489
         with:
           python-version: "3.12"
       - name: Check tag matches version (release events)

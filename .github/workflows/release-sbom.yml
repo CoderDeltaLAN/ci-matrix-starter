@@ -14,7 +14,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Generate SBOM (CycloneDX JSON)
-        uses: anchore/sbom-action@v0
+        uses: anchore/sbom-action@c73dd3f93ab542b7902df62a6ee5ad763179fa7b
         with:
           path: .
           format: cyclonedx-json
