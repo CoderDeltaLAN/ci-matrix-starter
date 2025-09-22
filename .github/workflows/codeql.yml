@@ -1,29 +1,37 @@
 name: CodeQL Analyze
+
 on:
   push:
     branches: ["main"]
   pull_request:
-    branches: ["main"]
   schedule:
-    - cron: "23 5 * * 1"
+    - cron: "17 3 * * 2"
   workflow_dispatch:
 
 permissions:
   contents: read
+  actions: read
   security-events: write
+
+concurrency:
+  group: codeql-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   analyze:
-    name: codeql
+    name: CodeQL
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        language: ["javascript", "python"]
+
     steps:
-      - uses: actions/checkout@v5
-      - uses: github/codeql-action@0337c4c06e7e00d0d6e64396c13b9dc18dd6d8c5
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
         with:
-          languages: ${{ matrix.language }}
-      - uses: github/codeql-action/autobuild@v3
-      - uses: github/codeql-action@0337c4c06e7e00d0d6e64396c13b9dc18dd6d8c5
+          # Limpiamos fallos por build: JS/TS y Python no requieren autobuild
+          languages: python,javascript-typescript
+          build-mode: none
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
