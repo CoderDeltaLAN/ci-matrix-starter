@@ -15,7 +15,7 @@ packages = [{ include = "ci_matrix_starter", from = "src" }]
 python = ">=3.11,<4.0"
 
 [tool.poetry.group.dev.dependencies]
-black = "^24.8.0"
+black = ">=24.8,<26.0"
 ruff = "^0.5.6"
 pytest = "^8.3.2"
 mypy = "^1.11.0"
